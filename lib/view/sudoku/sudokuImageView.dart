@@ -5,14 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class SudokuView extends StatefulWidget {
-  SudokuView({Key key}) : super(key: key);
+class SudokuImageView extends StatefulWidget {
+  SudokuImageView({Key key}) : super(key: key);
 
   @override
-  SudokuViewState createState() => SudokuViewState();
+  SudokuImageViewState createState() => SudokuImageViewState();
 }
 
-class SudokuViewState extends State<SudokuView> {
+class SudokuImageViewState extends State<SudokuImageView> {
   File _image;
   Dio _dio;
 
@@ -58,7 +58,9 @@ class SudokuViewState extends State<SudokuView> {
                 height: 50,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _image == null ? CupertinoColors.quaternarySystemFill : Colors.blueAccent,
+                  color: _image == null
+                      ? CupertinoColors.quaternarySystemFill
+                      : Colors.blueAccent,
                   borderRadius: BorderRadius.all(Radius.circular(25)),
                 ),
                 child: Text(
@@ -147,14 +149,12 @@ class SudokuViewState extends State<SudokuView> {
   }
 
   Future uploadImage() async {
-
     if (_image == null) {
-
       return;
     }
 
     var response = await _dio.post(
-      '127.0.0.1',
+      'http://192.168.1.9:8160/sudoku',
       data: FormData.fromMap({
         "image": await MultipartFile.fromFile(
           _image.path,
@@ -162,8 +162,9 @@ class SudokuViewState extends State<SudokuView> {
       }),
     );
 
-    if (response.statusCode == 200){
-
+    if (response.statusCode == 200) {
+      //TODO success operation.
+      clearImage();
     }
   }
 }
