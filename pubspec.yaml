@@ -22,9 +22,12 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  awesome_flutter:
+    git: 'git@github.com:Nomeleel/awesome_flutter.git'
   cupertino_icons: ^0.1.2
   image_picker: ^0.6.3+4
   dio: ^3.0.9
+  provider: ^4.0.4
 
 dev_dependencies:
   flutter_test:
