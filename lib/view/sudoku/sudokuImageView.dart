@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -153,18 +154,34 @@ class SudokuImageViewState extends State<SudokuImageView> {
       return;
     }
 
-    var response = await _dio.post(
+    await _dio.post(
       'http://192.168.1.9:8160/sudoku',
       data: FormData.fromMap({
         "image": await MultipartFile.fromFile(
           _image.path,
         ),
       }),
-    );
-
-    if (response.statusCode == 200) {
-      //TODO success operation.
-      clearImage();
-    }
+    ).then((response) {
+      if (response.statusCode == 200) {
+        if (response.data['solved']) {
+          FlushbarHelper.createSuccess(message: '已解决数独！').show(context);
+          clearImage();
+        } else {
+          FlushbarHelper.createAction(
+            message: '图片识别有误, 请尝试手动输入模式！',
+            button: FlatButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('routeName', arguments: response.data['sudokuStr']);
+              }, 
+              child: Text('转到'),
+            )
+          ).show(context);
+        }
+      } else {
+        FlushbarHelper.createError(message: '上传失败！').show(context);
+      }
+    }).catchError((){
+      FlushbarHelper.createError(message: '网络异常！').show(context);
+    });
   }
 }

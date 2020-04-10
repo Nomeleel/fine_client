@@ -1,5 +1,6 @@
 import 'package:awesome_flutter/widget/GridPaperExp.dart';
 import 'package:dio/dio.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -146,13 +147,22 @@ class SudokuManualViewState extends State<SudokuManualView> {
   }
 
   Future uploadSudokuStr() async {
-    var response = await _dio.post(
+   await _dio.post(
       'http://192.168.1.9:8160/sudoku',
       data: FormData.fromMap({
         "sudokuStr": _provider.sudokuStr,
       }),
-    );
-
-    if (response.statusCode == 200) {}
+    ).then((response) {
+      if (response.statusCode == 200) {
+        FlushbarHelper.createSuccess(
+          message: response.data['solved'] ? '已解决数独！' : '未解决数独！'
+        ).show(context);
+      } else {
+        FlushbarHelper.createError(message: '上传失败！').show(context);
+      }
+    }).catchError((){
+      FlushbarHelper.createError(message: '网络异常！').show(context);
+    });
   }
+
 }
