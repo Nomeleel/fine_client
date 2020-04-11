@@ -1,11 +1,11 @@
 import 'package:awesome_flutter/widget/GridPaperExp.dart';
 import 'package:dio/dio.dart';
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'sudokuManualProvider.dart';
+import '../../helper/flushbarHelper.dart';
 
  class SudokuManualView extends StatefulWidget {
    SudokuManualView({Key key}) : super(key: key);
@@ -146,22 +146,29 @@ class SudokuManualViewState extends State<SudokuManualView> {
     );
   }
 
-  Future uploadSudokuStr() async {
-   await _dio.post(
+  void uploadSudokuStr() {
+    _dio.post(
       'http://192.168.1.9:8160/sudoku',
       data: FormData.fromMap({
         "sudokuStr": _provider.sudokuStr,
       }),
     ).then((response) {
       if (response.statusCode == 200) {
-        FlushbarHelper.createSuccess(
-          message: response.data['solved'] ? '已解决数独！' : '未解决数独！'
-        ).show(context);
+        FlushBarHelper.showSuccess(
+          context: context,
+          message: response.data['solved'] ? '已解决数独！' : '未解决数独！',
+        );
       } else {
-        FlushbarHelper.createError(message: '上传失败！').show(context);
+        FlushBarHelper.showError(
+          context: context,
+          message: '上传失败！',
+        );
       }
-    }).catchError((){
-      FlushbarHelper.createError(message: '网络异常！').show(context);
+    }).catchError((e){
+      FlushBarHelper.showError(
+        context: context,
+        message: '网络异常！',
+      );
     });
   }
 

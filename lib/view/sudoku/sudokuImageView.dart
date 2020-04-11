@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../helper/flushbarHelper.dart';
 
 class SudokuImageView extends StatefulWidget {
   SudokuImageView({Key key}) : super(key: key);
@@ -164,24 +165,35 @@ class SudokuImageViewState extends State<SudokuImageView> {
     ).then((response) {
       if (response.statusCode == 200) {
         if (response.data['solved']) {
-          FlushbarHelper.createSuccess(message: '已解决数独！').show(context);
+          FlushBarHelper.showSuccess(
+            context: context, 
+            message: '已解决数独！',
+          );
           clearImage();
         } else {
-          FlushbarHelper.createAction(
+          FlushBarHelper.showSuccessAction(
+            context: context,
             message: '图片识别有误, 请尝试手动输入模式！',
-            button: FlatButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('routeName', arguments: response.data['sudokuStr']);
-              }, 
-              child: Text('转到'),
-            )
-          ).show(context);
+            actionLabel: '转到',
+            action: () {
+              Navigator.of(context).pushNamed(
+                'sudokuManual', 
+                arguments: response.data['sudokuStr'],
+              );
+            }, 
+          );
         }
       } else {
-        FlushbarHelper.createError(message: '上传失败！').show(context);
+        FlushBarHelper.showError(
+          context: context,
+          message: '上传失败！',
+        );
       }
-    }).catchError((){
-      FlushbarHelper.createError(message: '网络异常！').show(context);
+    }).catchError((e){
+      FlushBarHelper.showError(
+        context: context,
+        message: '网络异常！',
+      );
     });
   }
 }
