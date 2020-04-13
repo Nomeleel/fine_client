@@ -66,6 +66,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(10, (index) => digitButton(index)),
           ),
           Expanded(
@@ -95,33 +96,29 @@ class SudokuManualViewState extends State<SudokuManualView> {
   }
 
   Widget digitButton(int digit) {
-    return Expanded(
-      child: GestureDetector(
-        child: UnconstrainedBox(
-          child: Container(
-            width: 35,
-            height: 50,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-            ),
-            child: digit == 0 ? 
-              Icon(
-                Icons.clear,
-                color: Colors.red,
-                size: 30,
-              ) : 
-              Text(
-                digit.toString(),
-                style: TextStyle(
-                  fontSize: 27,
-                  color: Colors.white,
-                ),
+    return Material(
+      color: Colors.blueAccent,
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+      child: InkWell(
+        child: Container(
+          width: 35,
+          height: 50,
+          alignment: Alignment.center,
+          child: digit == 0 ? 
+            Icon(
+              Icons.clear,
+              color: Colors.red,
+              size: 30,
+            ) : 
+            Text(
+              digit.toString(),
+              style: TextStyle(
+                fontSize: 27,
+                color: Colors.white,
               ),
-          ),
+            ),
         ),
-        onTap: () => _provider.setDigit(digit)
+        onTap: () => _provider.setDigit(digit),
       ),
     );
   }
