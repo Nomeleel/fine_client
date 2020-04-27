@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'view/sudoku/sudokuView.dart';
-import 'view/sudoku/sudokuImageView.dart';
-import 'view/sudoku/sudokuManualView.dart';
+import 'view/sudoku/sudoku_view.dart';
+import 'view/sudoku/sudoku_image_view.dart';
+import 'view/sudoku/sudoku_manual_view.dart';
 
 class Route {
   static Map<String, WidgetBuilder> routes = {

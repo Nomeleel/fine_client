@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'sudokuImageView.dart';
-import 'sudokumanualView.dart';
+import 'sudoku_image_view.dart';
+import 'sudoku_manual_view.dart';
 
 class SudokuView extends StatefulWidget {
   SudokuView({Key key}) : super(key: key);

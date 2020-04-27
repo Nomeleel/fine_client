@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'sudokuManualProvider.dart';
-import '../../helper/flushbarHelper.dart';
+import '../../provider/sudoku_manual_provider.dart';
+import '../../helper/flushbar_helper.dart';
 
  class SudokuManualView extends StatefulWidget {
    SudokuManualView({Key key}) : super(key: key);

@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../helper/flushbarHelper.dart';
+import '../../helper/flushbar_helper.dart';
 
 class SudokuImageView extends StatefulWidget {
   SudokuImageView({Key key}) : super(key: key);
