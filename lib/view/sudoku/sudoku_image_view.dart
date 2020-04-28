@@ -177,7 +177,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
             actionLabel: '转到',
             action: () {
               Navigator.of(context).pushNamed(
-                'sudokuManual', 
+                'sudoku_manual_view', 
                 arguments: response.data['sudokuStr'],
               );
             }, 

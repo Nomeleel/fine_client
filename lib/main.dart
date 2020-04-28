@@ -1,6 +1,6 @@
-import 'route.dart' as Route;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:widget_scan/route/view_routes.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       home: MyHomePage(title: 'Fine'),
-      routes: Route.Route.routes,
+      routes: viewRoutes,
     );
   }
 }
@@ -34,7 +34,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    routeMap = Route.Route.routes;
+    routeMap = viewRoutes;
     super.initState();
   }
 
