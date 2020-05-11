@@ -1,3 +1,4 @@
+import 'package:awesome_flutter/widget/app_store_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:widget_scan/route/view_routes.dart';
@@ -71,16 +72,16 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   Widget listItemBuilder(int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed(routeMap.keys.elementAt(index));
-      },
-      child: Text(
-        routeMap.keys.elementAt(index),
-        style: TextStyle(
-          fontSize: 50,
-        ),
+    return AppStoreCard(
+      key: ValueKey('$index'),
+      elevation: 7,
+      radius: BorderRadius.all(Radius.circular(20)),
+      padding: EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: 20,
       ),
+      showBackgroundWidget: Image.asset('assets/images/Sudoku.jpg'),
+      detailWidget: viewRoutes.values.elementAt(index)(context),
     );
   }
 
