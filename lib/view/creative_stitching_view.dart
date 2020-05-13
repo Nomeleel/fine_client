@@ -15,8 +15,10 @@ class CreativeStitchingView extends StatefulWidget {
 
 class _CreativeStitchingViewState extends State<CreativeStitchingView> {
 
+  PageController _pageController = PageController();
   File _mainImage;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey = GlobalKey<ExtendedImageEditorState>();
+  Rect _mainImageCropRect;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
           ),
           child: PageView(
             physics: NeverScrollableScrollPhysics(),
+            controller: _pageController,
             children: <Widget> [
               pickMainImageView(),
               pickMultipleImageView(),
@@ -40,15 +43,26 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
     );
   }
 
+  Widget baseView(Widget topBar, Widget mainView) {
+    return Container(
+      color: Colors.white,
+      child: Stack(
+        children: <Widget> [
+          mainView,
+          topBar,
+        ],
+      ),
+    );
+  }
+
   Widget pickMainImageView() {
     return Container(
       color: Colors.white,
-      child: _mainImage == null ?
+      child: _mainImage != null ?
         Stack(
           children: <Widget> [
             ExtendedImage.file(
-              File('/storage/emulated/0/Download/Sudoku_Error.png'),
-              //_mainImage,
+              _mainImage,
               fit: BoxFit.contain,
               mode: ExtendedImageMode.editor,
               extendedImageEditorKey: _mainImageEditKey,
@@ -63,21 +77,16 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
             ),
             Positioned(
               top: 0.0,
-              child: Container(
-                color: Colors.blueAccent,
-                alignment: Alignment.centerRight,
-                height: 50,
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(
-                  right: 10.0,
-                ),
-                child: RaisedButton(
-                  child: Text('确定'),
-                  onPressed: () {
-                    print(_mainImageEditKey.currentState.getCropRect());
-                  }
-                ,)
-              )
+              child: topBar(
+                backAction: () {
+                  setState(() {
+                    _mainImage = null;
+                  });
+                },
+                beforeNextAction: () {
+                  _mainImageCropRect = _mainImageEditKey.currentState.getCropRect();
+                }
+              ),
             )
           ],
         ) :
@@ -110,14 +119,71 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   }
 
   Widget pickMultipleImageView() {
-    return Container(
-      color: Colors.green,
+    return baseView(
+      topBar(),
+      Text(''),
     );
   }
 
   Widget previewView() {
-    return Container(
-      color: Colors.yellowAccent,
+    return baseView(
+      topBar(),
+      Text(''),
     );
   }
+
+  Widget topBar({Function backAction, Function beforeNextAction}) {
+    return Container(
+      color: Color(0xFF232323),
+      height: 45,
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(
+        horizontal: 7.0,
+      ),
+      child: Row(
+        children: <Widget> [
+          GestureDetector(
+            child: Icon(Icons.arrow_back_ios),
+            onTap: () {
+              if (backAction == null) {
+                _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300), 
+                  curve: Curves.easeInOut,
+                );
+              } 
+              else {
+                backAction();
+              }
+            },
+          ),
+          Expanded(child: Text('')),
+          SizedBox(
+            width: 60,
+            height: 30,
+            child: CupertinoButton(
+              child: Text(
+                '下一步',
+                style: TextStyle(
+                  fontSize: 14.0,
+                ),
+              ),
+              color: Colors.green[500],
+              padding: EdgeInsets.zero,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              onPressed: () {
+                if (beforeNextAction != null) {
+                  beforeNextAction();
+                }
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300), 
+                  curve: Curves.easeInOut,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
