@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'dart:math' as math;
 
+import 'package:awesome_flutter/creative/creative_stitching.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -20,7 +24,8 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   File _mainImage;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey = GlobalKey<ExtendedImageEditorState>();
   Rect _mainImageCropRect;
-  List<AssetEntity> _multipleImageList;
+  List<File> _multipleImageList = List<File>();
+  List<ByteData> _finalByteDataList;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +53,12 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget baseView(Widget topBar, Widget mainView) {
     return Container(
       color: Colors.white,
-      child: Stack(
+      child: Column(
         children: <Widget> [
-          mainView,
           topBar,
+          Expanded(
+            child: mainView,
+          ),
         ],
       ),
     );
@@ -78,11 +85,9 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
             beforeNextAction: () {
               _mainImageCropRect = _mainImageEditKey.currentState.getCropRect();
             },
-            afterNextAction: () {
-              AssetPicker.pickAssets(
-                context,
-                selectedAssets: _multipleImageList,
-              );
+            afterNextAction: () async {
+              await pickAssets();
+              setState(() {});
             }
           ),
           ExtendedImage.file(
@@ -133,37 +138,74 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget pickMultipleImageView() {
     return baseView(
       topBar(
-        afterNextAction: () {
-          print('Creative Stitching');
+        afterNextAction: () async {
+          _finalByteDataList = await creativeStitchingByFile(
+            _mainImage,
+            _multipleImageList,
+            mainImageCropRect: _mainImageCropRect,
+          );
+
+          // try use compute.
+          // _finalByteDataList = await compute(
+          //   creativeStitching, 
+          //   {
+          //     "file": _mainImage,
+          //     "fileList": _multipleImageList,
+          //     "rect": _mainImageCropRect,
+          //   }
+          // );
+
+          setState(() { });
         }
       ),
-      _multipleImageList == null ?
+      _multipleImageList.length == 0 ?
       introductionView(
         actionLabel: '重新选择',
-        action: () {
-          AssetPicker.pickAssets(
-            context,
-            selectedAssets: _multipleImageList,
-          );
+        action: () async {
+          await pickAssets();
+          setState(() {});
         }
       ) :
-      Text('Show Image List')
+      GridView.count(
+        crossAxisCount: 3,
+        children: _multipleImageList.map<Widget>((file) => Image.file(
+          file,
+          fit: BoxFit.cover,
+        )).toList(),
+      )
     );
   }
 
   Widget previewView() {
     return baseView(
       topBar(
-        description: '预览'
+        description: '预览',
+        nextActionLabel: '导出',
       ),
-      Text(''),
+      Center(
+        child: _finalByteDataList == null ?
+          CircularProgressIndicator(
+            backgroundColor: Colors.white,
+          ) :
+          GridView.count(
+            crossAxisCount: 3,
+            crossAxisSpacing: 5.0,
+            mainAxisSpacing: 5.0,
+            children: _finalByteDataList.map<Widget>((bytes) => heroWidget(Image.memory(
+              bytes.buffer.asUint8List(),
+              fit: BoxFit.cover
+            ))).toList(),
+          )
+      ),
     );
   }
 
   Widget topBar({
     Function backAction,
     String description, 
+    String nextActionLabel = '下一步',
     Function beforeNextAction,
+    Function nextAction,
     Function afterNextAction,
   }) {
     return Container(
@@ -211,7 +253,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
             height: 30,
             child: CupertinoButton(
               child: Text(
-                '下一步',
+                nextActionLabel,
                 style: TextStyle(
                   fontSize: 14.0,
                 ),
@@ -223,10 +265,17 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
                 if (beforeNextAction != null) {
                   beforeNextAction();
                 }
-                _pageController.nextPage(
-                  duration: const Duration(milliseconds: 300), 
-                  curve: Curves.easeInOut,
-                );
+
+                if (nextAction == null) {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 300), 
+                    curve: Curves.easeInOut,
+                  );
+                }
+                else {
+                  nextAction();
+                }
+
                 if (afterNextAction != null) {
                   afterNextAction();
                 }
@@ -237,5 +286,51 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
       ),
     );
   }
+
+  pickAssets() async {
+    List<AssetEntity> multipleImageList = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 18,
+    );
+    await Future.wait(multipleImageList?.map((assetEntity) async {
+      _multipleImageList.add(await assetEntity.file);
+    }));
+  }
+
+  Widget heroWidget(Widget widget) {
+    var uniqueTag = DateTime.now().toString() + math.Random().nextInt(77).toString();
+    return GestureDetector(
+      child: Hero(
+        tag: uniqueTag,
+        child: widget,
+      ),
+      onTap: () {
+        Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return Hero(
+              tag: uniqueTag,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: <Widget> [
+                    widget,
+                  ],
+                ),
+              ),
+            );
+          },
+        ));
+      },
+    );
+  }
+
+  // static Future<List<ByteData>> creativeStitching(Map<String, dynamic> map) async {
+  //   return await creativeStitchingByFile(
+  //     map['file'],
+  //     map['fileList'],
+  //     mainImageCropRect: map['rect'],
+  //   );
+  // }
 
 }
