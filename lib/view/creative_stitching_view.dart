@@ -137,27 +137,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
 
   Widget pickMultipleImageView() {
     return baseView(
-      topBar(
-        afterNextAction: () async {
-          _finalByteDataList = await creativeStitchingByFile(
-            _mainImage,
-            _multipleImageList,
-            mainImageCropRect: _mainImageCropRect,
-          );
-
-          // try use compute.
-          // _finalByteDataList = await compute(
-          //   creativeStitching, 
-          //   {
-          //     "file": _mainImage,
-          //     "fileList": _multipleImageList,
-          //     "rect": _mainImageCropRect,
-          //   }
-          // );
-
-          setState(() { });
-        }
-      ),
+      topBar(),
       _multipleImageList.length == 0 ?
       introductionView(
         actionLabel: '重新选择',
@@ -183,19 +163,44 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
         nextActionLabel: '导出',
       ),
       Center(
-        child: _finalByteDataList == null ?
-          CircularProgressIndicator(
-            backgroundColor: Colors.white,
-          ) :
-          GridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: 5.0,
-            mainAxisSpacing: 5.0,
-            children: _finalByteDataList.map<Widget>((bytes) => heroWidget(Image.memory(
-              bytes.buffer.asUint8List(),
-              fit: BoxFit.cover
-            ))).toList(),
-          )
+        child: FutureBuilder(
+          future: () {
+            if (_mainImage == null || _multipleImageList.length == 0) {
+              return null;
+            }
+            return creativeStitchingByFile(
+              _mainImage,
+              _multipleImageList,
+              mainImageCropRect: _mainImageCropRect);
+          }(),
+          builder: (context, asyncSnapshot) {
+            switch (asyncSnapshot.connectionState) {
+              case ConnectionState.done:
+                if (asyncSnapshot.data != null) {
+                  _finalByteDataList = asyncSnapshot.data;
+                  return GridView.count(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 5.0,
+                    mainAxisSpacing: 5.0,
+                    children: _finalByteDataList.map<Widget>((bytes) => 
+                      heroWidget(Image.memory(
+                        bytes.buffer.asUint8List(),
+                        fit: BoxFit.cover
+                      )
+                    )).toList(),
+                  );
+                } 
+                else {
+                  return null;
+                }
+                break;
+              default:
+                return CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                );
+            }
+          }
+        ),  
       ),
     );
   }
