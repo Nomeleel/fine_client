@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -24,8 +25,18 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   File _mainImage;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey = GlobalKey<ExtendedImageEditorState>();
   Rect _mainImageCropRect;
-  List<File> _multipleImageList = List<File>();
+  List<File> _multipleImageList;
+  StreamController _streamController;
   List<ByteData> _finalByteDataList;
+
+  @override
+  void initState() {
+    _multipleImageList = List<File>();
+    _streamController = StreamController<List<File>>.broadcast();
+    _streamController.sink.add(_multipleImageList);
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +98,6 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
             },
             afterNextAction: () async {
               await pickAssets();
-              setState(() {});
             }
           ),
           ExtendedImage.file(
@@ -137,7 +147,38 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
 
   Widget pickMultipleImageView() {
     return baseView(
-      topBar(),
+      topBar(
+        afterNextAction: () {
+          _streamController.sink.close();
+          // Activate Stream.fromFuture in preview view.
+          setState(() { });
+        }
+      ),
+      StreamBuilder(
+        stream: _streamController.stream,
+        initialData: _multipleImageList,
+        builder: (context, asyncSnapshot) {
+          if ((asyncSnapshot.connectionState == ConnectionState.active ||
+            asyncSnapshot.connectionState == ConnectionState.done) && asyncSnapshot.data != null) {
+            return GridView.count(
+              crossAxisCount: 3,
+              children: asyncSnapshot.data.map<Widget>((file) => Image.file(
+                file,
+                fit: BoxFit.cover,
+              )).toList(),
+            );
+          }
+
+          return introductionView(
+            actionLabel: '重新选择',
+            action: () async {
+              await pickAssets();
+              //setState(() {});
+            }
+          );
+        }
+      ),
+      /*
       _multipleImageList.length == 0 ?
       introductionView(
         actionLabel: '重新选择',
@@ -153,6 +194,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
           fit: BoxFit.cover,
         )).toList(),
       )
+      */
     );
   }
 
@@ -163,16 +205,14 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
         nextActionLabel: '导出',
       ),
       Center(
-        child: FutureBuilder(
-          future: () {
-            if (_mainImage == null || _multipleImageList.length == 0) {
-              return null;
-            }
-            return creativeStitchingByFile(
+        child: StreamBuilder(
+          stream: Stream.fromFuture(
+            creativeStitchingByFile(
               _mainImage,
               _multipleImageList,
-              mainImageCropRect: _mainImageCropRect);
-          }(),
+              mainImageCropRect: _mainImageCropRect
+            )
+          ),
           builder: (context, asyncSnapshot) {
             switch (asyncSnapshot.connectionState) {
               case ConnectionState.done:
@@ -191,7 +231,9 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
                   );
                 } 
                 else {
-                  return null;
+                  return Center(
+                    child: Text('Please retry!'),
+                  );
                 }
                 break;
               default:
@@ -297,9 +339,14 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
       context,
       maxAssets: 18,
     );
-    await Future.wait(multipleImageList?.map((assetEntity) async {
-      _multipleImageList.add(await assetEntity.file);
-    }));
+
+    if (multipleImageList != null && multipleImageList.length > 0) {
+      _multipleImageList.clear();
+      await Future.wait(multipleImageList?.map((assetEntity) async {
+        _multipleImageList.add(await assetEntity.file);
+      }));
+      _streamController.sink.add(_multipleImageList);
+    }
   }
 
   Widget heroWidget(Widget widget) {
@@ -338,4 +385,10 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   //   );
   // }
 
+  @override
+  void dispose() {
+    _streamController.close();
+
+    super.dispose();
+  }
 }
