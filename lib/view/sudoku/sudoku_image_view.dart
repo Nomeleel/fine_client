@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
 
 import '../../helper/flushbar_helper.dart';
 
 class SudokuImageView extends StatefulWidget {
-  SudokuImageView({Key key}) : super(key: key);
+  const SudokuImageView({Key key}) : super(key: key);
 
   @override
   SudokuImageViewState createState() => SudokuImageViewState();
@@ -34,7 +34,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
           Expanded(
             flex: 9,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(50, 50, 50, 0),
+              padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
                 child: Container(
@@ -63,7 +63,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                   color: _image == null
                       ? CupertinoColors.quaternarySystemFill
                       : Colors.blueAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  borderRadius: const BorderRadius.all(Radius.circular(25)),
                 ),
                 child: Text(
                   '上传图片',
@@ -90,7 +90,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(25),
                 ),
               ),
@@ -121,7 +121,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                       height: 45,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(25),
                         ),
                       ),
@@ -136,8 +136,8 @@ class SudokuImageViewState extends State<SudokuImageView> {
           );
   }
 
-  Future pickImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage() async {
+    final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _image = image;
@@ -150,23 +150,25 @@ class SudokuImageViewState extends State<SudokuImageView> {
     });
   }
 
-  Future uploadImage() async {
+  Future<void> uploadImage() async {
     if (_image == null) {
       return;
     }
 
-    await _dio.post(
+    await _dio
+        .post<Response<dynamic>>(
       'http://192.168.1.9:8160/sudoku',
-      data: FormData.fromMap({
-        "image": await MultipartFile.fromFile(
+      data: FormData.fromMap(<String, dynamic>{
+        'image': await MultipartFile.fromFile(
           _image.path,
         ),
       }),
-    ).then((response) {
+    )
+        .then((Response<dynamic> response) {
       if (response.statusCode == 200) {
-        if (response.data['solved']) {
+        if (response.data['solved'] as bool) {
           FlushBarHelper.showSuccess(
-            context: context, 
+            context: context,
             message: '已解决数独！',
           );
           clearImage();
@@ -177,10 +179,10 @@ class SudokuImageViewState extends State<SudokuImageView> {
             actionLabel: '转到',
             action: () {
               Navigator.of(context).pushNamed(
-                'sudoku_manual_view', 
+                'sudoku_manual_view',
                 arguments: response.data['sudokuStr'],
               );
-            }, 
+            },
           );
         }
       } else {
@@ -189,7 +191,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
           message: '上传失败！',
         );
       }
-    }).catchError((e){
+    }).catchError((dynamic e) {
       FlushBarHelper.showError(
         context: context,
         message: '网络异常！',

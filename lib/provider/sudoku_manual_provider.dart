@@ -1,22 +1,24 @@
 import 'package:flutter/widgets.dart';
 
 class SudokuManualProvider with ChangeNotifier {
-  
   SudokuManualProvider({String fillSudokuStr}) {
-    bool isFillStr = fillSudokuStr != null && fillSudokuStr.length == 81;
-    _sudokuCellList = List.generate(81, (index) => SudokuCell(index, 
-      (isFillStr ? int.parse(fillSudokuStr[index]) : 0), false));
+    final bool isFillStr = fillSudokuStr != null && fillSudokuStr.length == 81;
+    _sudokuCellList = List<SudokuCell>.generate(
+        81,
+        (int index) => SudokuCell(
+            index, isFillStr ? int.parse(fillSudokuStr[index]) : 0, false));
   }
 
   List<SudokuCell> _sudokuCellList;
-  get sudokuCellList => _sudokuCellList;
+  List<SudokuCell> get sudokuCellList => _sudokuCellList;
 
   int _selectedIndex = -1;
-  get selectedIndex => _selectedIndex;
+  int get selectedIndex => _selectedIndex;
 
-  get sudokuStr => _sudokuCellList.map((item) => item.digit).join('');
+  String get sudokuStr =>
+      _sudokuCellList.map((SudokuCell item) => item.digit).join('');
 
-  selected(int index) {
+  void selected(int index) {
     if (_selectedIndex == index) {
       unSelected(index);
     } else {
@@ -28,14 +30,14 @@ class SudokuManualProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  unSelected(int index) {
+  void unSelected(int index) {
     if (index != -1) {
       retSetSudokuCell(index, isSelected: false);
       _selectedIndex = -1;
     }
   }
 
-  setDigit(int digit) {
+  void setDigit(int digit) {
     if (_selectedIndex != -1) {
       retSetSudokuCell(_selectedIndex, digit: digit);
 
@@ -43,18 +45,17 @@ class SudokuManualProvider with ChangeNotifier {
     }
   }
 
-  retSetSudokuCell(int index, {int digit, bool isSelected}) {
+  void retSetSudokuCell(int index, {int digit, bool isSelected}) {
     _sudokuCellList[index] = SudokuCell(
         index,
-        (digit ?? _sudokuCellList[index].digit),
-        (isSelected ?? _sudokuCellList[index].isSelected));
+        digit ?? _sudokuCellList[index].digit,
+        isSelected ?? _sudokuCellList[index].isSelected);
   }
 }
 
 class SudokuCell {
+  SudokuCell(this.index, this.digit, this.isSelected);
   final int index;
   int digit;
   bool isSelected;
-
-  SudokuCell(this.index, this.digit, this.isSelected);
 }

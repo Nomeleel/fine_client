@@ -4,7 +4,7 @@ import 'sudoku_image_view.dart';
 import 'sudoku_manual_view.dart';
 
 class SudokuView extends StatefulWidget {
-  SudokuView({Key key}) : super(key: key);
+  const SudokuView({Key key}) : super(key: key);
 
   @override
   SudokuViewState createState() => SudokuViewState();
@@ -23,9 +23,9 @@ class SudokuViewState extends State<SudokuView> {
   @override
   Widget build(BuildContext context) {
     return PageView(
-      controller: this._pageController,
-      physics: ClampingScrollPhysics(),
-      children: <Widget>[
+      controller: _pageController,
+      physics: const ClampingScrollPhysics(),
+      children: const <Widget>[
         SudokuImageView(),
         SudokuManualView(),
       ],

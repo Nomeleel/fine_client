@@ -14,14 +14,14 @@ class MyApp extends StatelessWidget {
         barBackgroundColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: MyHomePage(title: 'Fine'),
+      home: const MyHomePage(title: 'Fine'),
       routes: viewRoutes,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
@@ -29,9 +29,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  final _listKey = GlobalKey<AnimatedListState>();
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
-  Map<String, WidgetBuilder> routeMap = Map<String, WidgetBuilder>();
+  Map<String, WidgetBuilder> routeMap = <String, WidgetBuilder>{};
 
   @override
   void initState() {
@@ -54,15 +54,16 @@ class MyHomePageState extends State<MyHomePage> {
       child: AnimatedList(
         key: _listKey,
         initialItemCount: routeMap.length,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         controller: ScrollController(),
-        itemBuilder: (context, index, animation) {
+        itemBuilder:
+            (BuildContext context, int index, Animation<double> animation) {
           return SlideTransition(
             position: animation
                 .drive(CurveTween(curve: Curves.elasticInOut))
                 .drive(Tween<Offset>(
-                  begin: Offset(-1, 0),
-                  end: Offset(0, 0),
+                  begin: const Offset(-1, 0),
+                  end: const Offset(0, 0),
                 )),
             child: listItemBuilder(index),
           );
@@ -73,14 +74,14 @@ class MyHomePageState extends State<MyHomePage> {
 
   Widget listItemBuilder(int index) {
     return AppStoreCard(
-      key: ValueKey('$index'),
+      key: ValueKey<String>('$index'),
       elevation: 7,
-      radius: BorderRadius.all(Radius.circular(20)),
-      padding: EdgeInsets.symmetric(
+      radius: const BorderRadius.all(Radius.circular(20)),
+      padding: const EdgeInsets.symmetric(
         vertical: 10,
         horizontal: 20,
       ),
-      showBackgroundWidget: Image.asset('assets/images/Sudoku.jpg'),
+      showBackgroundWidget: Image.asset('assets/images/SaoSiMing.jpg'),
       detailWidget: viewRoutes.values.elementAt(index)(context),
     );
   }
