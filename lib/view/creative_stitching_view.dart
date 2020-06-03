@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:awesome_flutter/creative/creative_stitching.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class CreativeStitchingView extends StatefulWidget {
@@ -21,19 +21,19 @@ class CreativeStitchingView extends StatefulWidget {
 
 class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   final PageController _pageController = PageController();
-  File _mainImage;
+  String _mainImagePath;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey =
       GlobalKey<ExtendedImageEditorState>();
   Rect _mainImageCropRect;
-  List<File> _multipleImageList;
-  StreamController<List<File>> _streamController;
+  List<String> _multipleImagePathList;
+  StreamController<List<String>> _streamController;
   List<ByteData> _finalByteDataList;
 
   @override
   void initState() {
-    _multipleImageList = <File>[];
-    _streamController = StreamController<List<File>>.broadcast();
-    _streamController.sink.add(_multipleImageList);
+    _multipleImagePathList = <String>[];
+    _streamController = StreamController<List<String>>();
+    _streamController.add(_multipleImagePathList);
 
     super.initState();
   }
@@ -77,18 +77,19 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget pickMainImageView() {
     return Container(
       color: Colors.white,
-      child: _mainImage == null
+      child: _mainImagePath == null
           ? introductionView(
               actionLabel: '选择图片',
               action: () async {
-                _mainImage =
-                    await ImagePicker.pickImage(source: ImageSource.gallery);
+                _mainImagePath =
+                    (await ImagePicker.pickImage(source: ImageSource.gallery))
+                        .path;
                 setState(() {});
               })
           : baseView(
               topBar(backAction: () {
                 setState(() {
-                  _mainImage = null;
+                  _mainImagePath = null;
                 });
               }, beforeNextAction: () {
                 _mainImageCropRect =
@@ -97,7 +98,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
                 pickAssets();
               }),
               ExtendedImage.file(
-                _mainImage,
+                File(_mainImagePath),
                 fit: BoxFit.contain,
                 mode: ExtendedImageMode.editor,
                 extendedImageEditorKey: _mainImageEditKey,
@@ -143,23 +144,22 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget pickMultipleImageView() {
     return baseView(
       topBar(afterNextAction: () {
-        _streamController.sink.close();
         // Activate Stream.fromFuture in preview view.
         setState(() {});
       }),
-      StreamBuilder<List<File>>(
+      StreamBuilder<List<String>>(
           stream: _streamController.stream,
-          initialData: _multipleImageList,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<File>> asyncSnapshot) {
+          initialData: _multipleImagePathList,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<String>> asyncSnapshot) {
             if ((asyncSnapshot.connectionState == ConnectionState.active ||
                     asyncSnapshot.connectionState == ConnectionState.done) &&
                 asyncSnapshot.data != null) {
               return GridView.count(
                 crossAxisCount: 3,
                 children: asyncSnapshot.data
-                    .map<Widget>((File file) => Image.file(
-                          file,
+                    .map<Widget>((String filePath) => Image.file(
+                          File(filePath),
                           fit: BoxFit.cover,
                         ))
                     .toList(),
@@ -178,14 +178,24 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget previewView() {
     return baseView(
       topBar(
-        description: '预览',
-        nextActionLabel: '导出',
-      ),
+          description: '预览',
+          nextActionLabel: '导出',
+          nextAction: () async {
+            if (_finalByteDataList != null) {
+              for (final ByteData imageByteData in _finalByteDataList) {
+                await ImageGallerySaver.saveImage(
+                    imageByteData.buffer.asUint8List());
+                print('Save complete.');
+              }
+            }
+          }),
       Center(
         child: StreamBuilder<List<ByteData>>(
-            stream: Stream<List<ByteData>>.fromFuture(creativeStitchingByFile(
-                _mainImage, _multipleImageList,
-                mainImageCropRect: _mainImageCropRect)),
+            stream: _multipleImagePathList.isNotEmpty
+                ? Stream<List<ByteData>>.fromFuture(creativeStitchingByFilePath(
+                    _mainImagePath, _multipleImagePathList,
+                    mainImageCropRect: _mainImageCropRect))
+                : null,
             builder: (BuildContext context,
                 AsyncSnapshot<List<ByteData>> asyncSnapshot) {
               switch (asyncSnapshot.connectionState) {
@@ -309,11 +319,12 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
     );
 
     if (multipleImageList != null && multipleImageList.isNotEmpty) {
-      _multipleImageList.clear();
+      _multipleImagePathList.clear();
       await Future.wait(multipleImageList?.map((AssetEntity assetEntity) async {
-        _multipleImageList.add(await assetEntity.file);
+        _multipleImagePathList.add((await assetEntity.file).path);
       }));
-      _streamController.sink.add(_multipleImageList);
+      _streamController.add(_multipleImagePathList);
+      multipleImageList.clear();
     }
   }
 
