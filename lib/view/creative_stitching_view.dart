@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:awesome_flutter/creative/creative_stitching.dart';
 import 'package:extended_image/extended_image.dart';
@@ -40,37 +41,27 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 0,
-          ),
-          child: PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: <Widget>[
-                pickMainImageView(),
-                pickMultipleImageView(),
-                previewView(),
-              ]),
-        ),
+    return Scaffold(
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        children: <Widget>[
+          pickMainImageView(),
+          pickMultipleImageView(),
+          previewView(),
+        ]
       ),
     );
   }
 
   Widget baseView(Widget topBar, Widget mainView) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        children: <Widget>[
-          topBar,
-          Expanded(
-            child: mainView,
-          ),
-        ],
-      ),
+    return Column(
+      children: <Widget>[
+        topBar,
+        Expanded(
+          child: mainView,
+        ),
+      ],
     );
   }
 
@@ -156,7 +147,10 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
                     asyncSnapshot.connectionState == ConnectionState.done) &&
                 asyncSnapshot.data != null) {
               return GridView.count(
+                padding: EdgeInsets.zero,
                 crossAxisCount: 3,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
                 children: asyncSnapshot.data
                     .map<Widget>((String filePath) => Image.file(
                           File(filePath),
@@ -220,7 +214,7 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
                   break;
                 default:
                   return CircularProgressIndicator(
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.transparent,
                   );
               }
             }),
@@ -238,11 +232,10 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   }) {
     return Container(
       color: const Color(0xFF232323),
-      height: 45,
+      height: 40 + MediaQueryData.fromWindow(window).padding.top,
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 7.0,
-      ),
+      padding: const EdgeInsets.fromLTRB(7.0, 0.0, 7.0, 7.0),
+      alignment: Alignment.bottomCenter,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -267,13 +260,14 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
             ),
           ),
           Expanded(
-              child: Text(
-            description ?? '',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
+            child: Text(
+              description ?? '',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
-          )),
+          ),
           SizedBox(
             width: 60,
             height: 30,

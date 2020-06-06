@@ -83,6 +83,7 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       showBackgroundWidget: Image.asset('assets/images/SaoSiMing.jpg'),
       detailWidget: viewRoutes.values.elementAt(index)(context),
+      isAlwayShow: false,
     );
   }
 
