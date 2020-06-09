@@ -294,14 +294,18 @@ class _CreativeStitchingViewState extends State<CreativeStitchingView> {
   Widget imageGridView() {
     final List<Widget> imageList = <Widget>[];
     final List<Widget> detailViewList = _finalByteDataList
-        .map<Widget>((ByteData byteData) => ExtendedImageSlidePage(
+        .map<Widget>(
+          (ByteData byteData) => ExtendedImageSlidePage(
+            child: SingleChildScrollView(
               child: ExtendedImage.memory(
                 byteData.buffer.asUint8List(),
                 fit: BoxFit.fitWidth,
                 enableSlideOutPage: true,
                 mode: ExtendedImageMode.gesture,
               ),
-            ))
+            ),
+          ),
+        )
         .toList();
 
     for (int i = 0; i < _finalByteDataList.length; i++) {
