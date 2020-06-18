@@ -1,34 +1,20 @@
 import 'dart:ui';
 
+import 'package:awesome_flutter/custom/animation/gesture_scale_transition.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/goldfinger_race_provider.dart';
 
-class GoldfingerRaceView extends StatefulWidget {
+class GoldfingerRaceView extends StatelessWidget {
   const GoldfingerRaceView({Key key}) : super(key: key);
 
   @override
-  _GoldfingerRaceViewState createState() => _GoldfingerRaceViewState();
-}
-
-class _GoldfingerRaceViewState extends State<GoldfingerRaceView> {
-  final GoldfingerRaceProvider _provider = GoldfingerRaceProvider();
-  
-  VoidCallback _onClick;
-
-  @override
-  void initState() {
-    _onClick = start;
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GoldfingerRaceProvider>.value(
-      value: _provider,
+    return ChangeNotifierProvider<GoldfingerRaceProvider>(
+      create: (BuildContext context) => GoldfingerRaceProvider(),
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.symmetric(
@@ -45,13 +31,14 @@ class _GoldfingerRaceViewState extends State<GoldfingerRaceView> {
                   alignment: Alignment.topLeft,
                   height: 20,
                   color: Colors.purple.withOpacity(0.7),
-                  child: Consumer<GoldfingerRaceProvider>(
-                    builder: (BuildContext context, GoldfingerRaceProvider value, Widget child) {
+                  child: Selector<GoldfingerRaceProvider, bool>(
+                    selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.isStart,
+                    builder: (BuildContext context, bool isStart, Widget child) {
                       return AnimatedContainer(
-                        duration: value.duration,
-                        width: value.isStart ? 0 : MediaQuery.of(context).size.width - 14,
+                        duration: isStart ? Provider.of<GoldfingerRaceProvider>(context, listen: false).duration : Duration.zero,
+                        width: isStart ? 0 : MediaQuery.of(context).size.width - 14,
                         decoration: BoxDecoration(
-                          color: value.isStart ? Colors.red : Colors.purple,
+                          color: isStart ? Colors.red : Colors.purple,
                           borderRadius: const BorderRadius.all(Radius.circular(10)),
                         ),
                       );
@@ -61,7 +48,7 @@ class _GoldfingerRaceViewState extends State<GoldfingerRaceView> {
               ),
               Expanded(
                 child: Consumer<GoldfingerRaceProvider>(
-                  builder: (BuildContext context, GoldfingerRaceProvider value, Widget child) {
+                  builder: (BuildContext context, GoldfingerRaceProvider provider, Widget child) {
                     return AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
                       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -74,8 +61,8 @@ class _GoldfingerRaceViewState extends State<GoldfingerRaceView> {
                         );
                       },
                       child: Text(
-                        '${value.clickedCount}',
-                        key: ValueKey<int>(value.clickedCount),
+                        '${provider.clickedCount}',
+                        key: ValueKey<int>(provider.clickedCount),
                         maxLines: 1,
                         style: const TextStyle(
                           color: Colors.purple,
@@ -87,23 +74,28 @@ class _GoldfingerRaceViewState extends State<GoldfingerRaceView> {
                   },
                 ), 
               ),
-              RaisedButton(
-                onPressed: _onClick,
+              Selector<GoldfingerRaceProvider, VoidCallback>(
+                selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.onClick,
+                builder: (BuildContext context, VoidCallback onClick, Widget child) {
+                  return GestureScaleTransition(
+                    callBack: onClick,
+                    minScale: 0.5,
+                    duration: const Duration(milliseconds: 150),
+                    child: const Icon(
+                      Icons.favorite,
+                      size: 77,
+                      color: Colors.purple,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 77,
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void start() {
-    _provider.start(const Duration(seconds: 6));
-    addCount();
-    _onClick = addCount;
-  }
-
-  void addCount() {
-    _provider.addCount();
   }
 }
