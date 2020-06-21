@@ -4,7 +4,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/lyrics_provider.dart';
 
 class LyricsView extends StatefulWidget {
   const LyricsView({Key key}) : super(key: key);
@@ -14,11 +16,9 @@ class LyricsView extends StatefulWidget {
 }
 
 class _LyricsViewState extends State<LyricsView> {
-  
-  FixedExtentScrollController _controller;
+  final LyricsProvider _provider = LyricsProvider();
+  final FixedExtentScrollController _controller = FixedExtentScrollController();
   Timer _mainTimer;
-  Lyric _lyric;
-  bool get _isCancel => _controller.selectedItem >= _lyric.lyricItemList.length - 1;
 
   @override
   void initState() {
@@ -27,13 +27,6 @@ class _LyricsViewState extends State<LyricsView> {
     SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.landscapeRight,
     ]);
-    _controller = FixedExtentScrollController();
-    Future<void>.delayed(Duration.zero, () async {
-      _lyric = await parseLyric();
-      setState(() {
-
-      });
-    });
   }
 
   @override
@@ -53,21 +46,29 @@ class _LyricsViewState extends State<LyricsView> {
               sigmaX: 7,
               sigmaY: 7,
             ),
-            child: _lyric == null ?
-              const Center(
-                child: CupertinoActivityIndicator(radius: 15,),
-              ) :
-              Stack(
-                children: <Widget>[
-                  lyricsListView(),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: MediaQueryData.fromWindow(window).padding.bottom,
-                    child: controlBar(),
-                  ),
-                ],
+            child: ChangeNotifierProvider<LyricsProvider>.value(
+              value: _provider..init(),
+              child: Selector<LyricsProvider, List<LyricItemWidget>>(
+                selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
+                builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
+                  return list == null ?
+                    const Center(
+                      child: CupertinoActivityIndicator(radius: 15,),
+                    ) :
+                    Stack(
+                      children: <Widget>[
+                        lyricsListView(),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: MediaQueryData.fromWindow(window).padding.bottom,
+                          child: controlBar(context),
+                        ),
+                      ],
+                    );
+                }, 
               ),
+            ),
           ),
         ],
       ), 
@@ -82,33 +83,34 @@ class _LyricsViewState extends State<LyricsView> {
       perspective: 0.0001,
       itemExtent: MediaQuery.of(context).size.height / 3,
       children: List<Widget>.generate(
-        _lyric.lyricItemList.length,
-        (int index) => Container(
-          alignment: Alignment.center,
-          //color: Colors.purple,
-          child: Text(
-            _lyric.lyricItemList[index].text,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: 66,
-              color: ((_controller.hasClients ? _controller.selectedItem : 0) == index) ? 
-                Colors.white : 
-                Colors.white.withOpacity(0.3),
-            ),
-          ),
-        ),
+        _provider.lyricItemWidgetList.length,
+        (int index) => Selector<LyricsProvider, LyricItemWidget>(
+          selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
+          builder: (BuildContext context, LyricItemWidget widget, Widget child) {
+            print('build: $index');
+            return Container(
+              alignment: Alignment.center,
+              //color: Colors.purple,
+              child: Text(
+                widget.lyricItem.text,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: widget.fontSize,
+                  color: widget.fontColor,
+                ),
+              ),
+            );
+          },
+        )
       ),
       onSelectedItemChanged: (int index) {
-        setState(() {
-          
-        });
+        _provider.setCurrentIndex(index);
       },
     );
   }
 
-
-  Widget controlBar() {
+  Widget controlBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget> [
@@ -128,11 +130,11 @@ class _LyricsViewState extends State<LyricsView> {
     );
   }
 
-  void animateToNext() {
-    if (_isCancel) {
+  Future<void> animateToNext() async {
+    if (_provider.isLast()) {
       cancel();
     } else {
-      _controller.animateToItem(
+      await _controller.animateToItem(
         _controller.selectedItem + 1,
         duration: const Duration(seconds: 1),
         curve: Curves.ease,
@@ -147,11 +149,9 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   void nextTimer() {
-    if (!_isCancel) {
-      final Duration duration = _lyric.lyricItemList[_controller.selectedItem + 1].duration - 
-        _lyric.lyricItemList[_controller.selectedItem].duration;
-      _mainTimer = Timer(duration, () {
-        animateToNext();
+    if (!_provider.isLast()) {
+      _mainTimer = Timer(_provider.getNextDuration(), () async {
+        await animateToNext();
         nextTimer();
       });
     }
@@ -159,28 +159,6 @@ class _LyricsViewState extends State<LyricsView> {
 
   void cancel() {
     _mainTimer.cancel();
-  }
-
-  Future<Lyric> parseLyric() async {
-    final String lyricStr = await rootBundle.loadString('assets/lyrics/Mojito.lrc');
-    final RegExp regExp = RegExp(
-      r'\[(?<min>\d{2}):(?<sec>\d{2}).(?<mil>\d{2})](?<text>.*)', 
-      multiLine: true,
-    );
-    final Lyric lyric = Lyric(lyricItemList: <LyricItem>[]);
-
-    regExp.allMatches(lyricStr).forEach((RegExpMatch element) { 
-      lyric.lyricItemList.add(LyricItem(
-        duration: Duration(
-          minutes: int.parse(element.namedGroup('min')),
-          seconds: int.parse(element.namedGroup('sec')),
-          milliseconds: int.parse(element.namedGroup('mil')) * 10,
-        ),
-        text: element.namedGroup('text'),
-      ));
-    });
-
-    return lyric;
   }
 
   @override
@@ -191,17 +169,4 @@ class _LyricsViewState extends State<LyricsView> {
 
     super.dispose();
   }
-}
-
-class Lyric {
-  Lyric({this.lyricItemList});
-
-  final List<LyricItem> lyricItemList;
-}
-
-class LyricItem {
-  const LyricItem({this.duration, this.text});
-
-  final Duration duration;
-  final String text;
 }
