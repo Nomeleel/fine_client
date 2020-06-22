@@ -31,6 +31,7 @@ class _LyricsViewState extends State<LyricsView> {
 
   @override
   Widget build(BuildContext context) {
+    print('root build');
     return Container(
       color: Colors.white,
       child: Stack(
@@ -87,12 +88,12 @@ class _LyricsViewState extends State<LyricsView> {
         (int index) => Selector<LyricsProvider, LyricItemWidget>(
           selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
           builder: (BuildContext context, LyricItemWidget widget, Widget child) {
-            print('build: $index');
+            print('${DateTime.now()} build: $index');
             return Container(
               alignment: Alignment.center,
               //color: Colors.purple,
               child: Text(
-                widget.lyricItem.text,
+                _provider.lyricItemList[index].text,
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 style: TextStyle(
@@ -125,6 +126,17 @@ class _LyricsViewState extends State<LyricsView> {
         RaisedButton(
           onPressed: cancel,
           child: const Text('End'),
+        ),
+        RaisedButton(
+          onPressed: () => _provider.setDecoration(fontColor: Colors.black),
+          child: const Text('Color'),
+        ),
+        CupertinoSlider(
+          value: _provider.fontSize,
+          min: 10,
+          max: 80,
+          activeColor: Colors.purple,
+          onChanged: (double value) => _provider.setDecoration(fontSize: value),
         ),
       ],
     );

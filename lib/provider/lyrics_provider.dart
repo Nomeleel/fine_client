@@ -9,34 +9,44 @@ class LyricsProvider with ChangeNotifier{
   
   int _currentIndex = 0;
 
+  List<LyricItem> _lyricItemList;
+  List<LyricItem> get lyricItemList => _lyricItemList;
+
   List<LyricItemWidget> _lyricItemWidgetList;
   List<LyricItemWidget> get lyricItemWidgetList => _lyricItemWidgetList;
 
-  final Color fontColor = const Color(0xffffffff);
-  final double fontSize = 60;
+  Color _fontColor = const Color(0xffffffff);
+  Color get fontColor => _fontColor;
+
+  double _fontSize = 60;
+  double get fontSize => _fontSize;
 
   Future<void> init() async {
     final Lyric lyric = await _parseLyric();
-    _lyricItemWidgetList = lyric.lyricItemList.map<LyricItemWidget>((LyricItem item) {
-      return normalLyricItemWidget(item);
-    }).toList();
-    setCurrentIndex(_currentIndex);
+    _lyricItemList = lyric.lyricItemList;
+    generateLyricItemWidgetList();
+    
     notifyListeners();
   }
 
-  LyricItemWidget normalLyricItemWidget(LyricItem lyricItem) {
-    return LyricItemWidget(lyricItem, fontColor.withOpacity(0.3), fontSize);
+  void generateLyricItemWidgetList() {
+    _lyricItemWidgetList = List<LyricItemWidget>.filled(
+      _lyricItemList.length, normalLyricItemWidget());
+
+    _lyricItemWidgetList[_currentIndex] = activeLyricItemWidget();
   }
 
-  LyricItemWidget activeLyricItemWidget(LyricItem lyricItem) {
-    return LyricItemWidget(lyricItem, fontColor, fontSize + 6);
+  LyricItemWidget normalLyricItemWidget() {
+    return LyricItemWidget(_fontColor.withOpacity(0.3), _fontSize);
+  }
+
+  LyricItemWidget activeLyricItemWidget() {
+    return LyricItemWidget(_fontColor, _fontSize + 6);
   }
 
   void onCurrentIndexChanged(int oldIndex, int newIndex) {
-    _lyricItemWidgetList[oldIndex] = 
-      normalLyricItemWidget(_lyricItemWidgetList[oldIndex].lyricItem);
-    _lyricItemWidgetList[newIndex] = 
-      activeLyricItemWidget(_lyricItemWidgetList[newIndex].lyricItem);
+    _lyricItemWidgetList[oldIndex] = normalLyricItemWidget();
+    _lyricItemWidgetList[newIndex] = activeLyricItemWidget();
   }
 
   void setCurrentIndex(int index) {
@@ -47,11 +57,23 @@ class LyricsProvider with ChangeNotifier{
 
   Duration getNextDuration() {
     final Duration Function(int index) getDuration = 
-      (int index) => _lyricItemWidgetList[index].lyricItem.duration;
+      (int index) => _lyricItemList[index].duration;
     return getDuration(_currentIndex + 1) - getDuration(_currentIndex);
   }
 
   bool isLast() => _currentIndex >= _lyricItemWidgetList.length - 1;
+
+  void setDecoration({Color fontColor, double fontSize}) {
+    if (fontColor == null && fontSize == null) {
+      return;
+    }
+    
+    _fontColor = fontColor ?? _fontColor;
+    _fontSize = fontSize ?? _fontSize;
+    generateLyricItemWidgetList();
+    
+    notifyListeners();
+  }
 
   Future<Lyric> _parseLyric() async {
     final String lyricStr = await rootBundle.loadString('assets/lyrics/Mojito.lrc');
@@ -78,9 +100,8 @@ class LyricsProvider with ChangeNotifier{
 }
 
 class LyricItemWidget {
-  const LyricItemWidget(this.lyricItem, this.fontColor, this.fontSize);
+  const LyricItemWidget(this.fontColor, this.fontSize);
 
-  final LyricItem lyricItem;
   final Color fontColor;
   final double fontSize;
 }
