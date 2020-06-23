@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:awesome_flutter/widget/preferred_orientations.dart';
+import 'package:awesome_flutter/wrapper/cupertino_slider_wrapper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,17 +23,32 @@ class _LyricsViewState extends State<LyricsView> {
   Timer _mainTimer;
 
   @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
-  @override
   Widget build(BuildContext context) {
     print('root build');
+    return PreferredOrientations(
+      orientations: const <DeviceOrientation>[DeviceOrientation.landscapeRight,],
+      child: scaffold(
+        child: ChangeNotifierProvider<LyricsProvider>.value(
+          value: _provider..init(),
+          child: Selector<LyricsProvider, List<LyricItemWidget>>(
+            selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
+            builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
+              return list == null ? activityIndicator() : lyricsListView();
+            },
+          ),
+        ),
+        control: Positioned(
+          left: 0,
+          right: 0,
+          bottom: MediaQueryData.fromWindow(window).padding.bottom,
+          child: controlBar(),
+        ),
+      ), 
+    );
+  }
+
+  // build ui
+  Widget scaffold({Widget child, Widget control}) {
     return Container(
       color: Colors.white,
       child: Stack(
@@ -47,36 +64,20 @@ class _LyricsViewState extends State<LyricsView> {
               sigmaX: 7,
               sigmaY: 7,
             ),
-            child: ChangeNotifierProvider<LyricsProvider>.value(
-              value: _provider..init(),
-              child: Selector<LyricsProvider, List<LyricItemWidget>>(
-                selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
-                builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
-                  return list == null ?
-                    const Center(
-                      child: CupertinoActivityIndicator(radius: 15,),
-                    ) :
-                    Stack(
-                      children: <Widget>[
-                        lyricsListView(),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: MediaQueryData.fromWindow(window).padding.bottom,
-                          child: controlBar(context),
-                        ),
-                      ],
-                    );
-                }, 
-              ),
-            ),
+            child: child,
           ),
+          control,
         ],
-      ), 
+      ),
     );
   }
 
-  // build ui
+  Widget activityIndicator() {
+    return const Center(
+      child: CupertinoActivityIndicator(radius: 15,),
+    );
+  }
+
   Widget lyricsListView() {
     return ListWheelScrollView(
       controller: _controller,
@@ -111,7 +112,7 @@ class _LyricsViewState extends State<LyricsView> {
     );
   }
 
-  Widget controlBar(BuildContext context) {
+  Widget controlBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget> [
@@ -131,7 +132,7 @@ class _LyricsViewState extends State<LyricsView> {
           onPressed: () => _provider.setDecoration(fontColor: Colors.black),
           child: const Text('Color'),
         ),
-        CupertinoSlider(
+        CupertinoSliderWrapper(
           value: _provider.fontSize,
           min: 10,
           max: 80,
@@ -173,12 +174,4 @@ class _LyricsViewState extends State<LyricsView> {
     _mainTimer.cancel();
   }
 
-  @override
-  void dispose() {
-    // SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    //   DeviceOrientation.portraitUp,
-    // ]);
-
-    super.dispose();
-  }
 }
