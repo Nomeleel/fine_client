@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:awesome_flutter/widget/color_picker.dart';
 import 'package:awesome_flutter/widget/preferred_orientations.dart';
+import 'package:awesome_flutter/widget/side_panel.dart';
 import 'package:awesome_flutter/wrapper/cupertino_slider_wrapper.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,12 +40,7 @@ class _LyricsViewState extends State<LyricsView> {
             },
           ),
         ),
-        control: Positioned(
-          left: 0,
-          right: 0,
-          bottom: MediaQueryData.fromWindow(window).padding.bottom,
-          child: controlBar(),
-        ),
+        control: controlPanel(),
       ), 
     );
   }
@@ -140,6 +138,53 @@ class _LyricsViewState extends State<LyricsView> {
           onChanged: (double value) => _provider.setDecoration(fontSize: value),
         ),
       ],
+    );
+  }
+
+  Widget controlPanel() {
+    return SidePanel(
+      mainAxisHeight: 330,
+      orientation: SidePanelOrientation.end,
+      child: Container(
+        padding: const EdgeInsets.only(
+          top: 10,
+          left: 15,
+          right: 15,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.8),
+        ),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: <Widget>[
+            const Text(
+              '字体颜色',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+            ColorPicker(
+              color: _provider.fontColor,
+              onColorChanged: (Color color) {
+                _provider.setDecoration(fontColor: color);
+              },
+            ),
+            const Text(
+              '字体大小',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+            CupertinoSliderWrapper(
+              value: _provider.fontSize,
+              min: 10,
+              max: 80,
+              activeColor: Colors.purple,
+              onChanged: (double value) => _provider.setDecoration(fontSize: value),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
