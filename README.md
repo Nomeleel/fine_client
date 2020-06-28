@@ -75,3 +75,31 @@
 为了将前后端分离，也为了能让后端更灵活，所以后端单拉了一个项目，名字我都想好了就叫：**Fine Service**，哈哈哈。详情请[出门左转，下个路口再见吧！](https://github.com/Nomeleel/fine_service)
 
 ## 创意拼图
+
+当你出去玩拍了很多照片 但发朋友圈不得不拼接 并且还想拼出一个美美的自己时 如果有一个工具能帮我拼接就好了
+哈哈哈 这里刚好有一个 使用已很简单
+
+先选一张美美的自己
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/creative_stitching_1.PNG" width="20%" />
+
+在选择最多18张图
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/creative_stitching_2.PNG" width="20%" />
+
+(图片来自于PhotoX)
+
+剩下的交给时间，片刻后即可预览结果，可以点开图片看到详细图片
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/creative_stitching_3.PNG" width="20%" />
+
+觉得拼得不行返回重复步骤即可，待到感觉拼的不错就可以导出图片
+**横图和竖图混排都可以的**，这里只演示了竖图，没办法，手机只有竖图
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/cs_export_1.PNG" width="20%" />
+
+最后等到发朋友圈的时候是这个样子的
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/wechat_moment.jpeg" width="20%" />
+
+就这？哈哈哈
