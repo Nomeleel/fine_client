@@ -13,6 +13,7 @@
 | :------: | ------ | :------: |
 | [数独](#数独) | 数独不会解，截图上传就完事了。什么？你不会截图，那你试试手动输入模式。 |
 | [创意拼图](#创意拼图) | 想要微信九宫格整体显示为一张图片，可以试试这个。注意！并非一张图片裁切成九份这么简单！ |
+| [歌词提示器](#歌词提示器) | 横屏显示的歌词提示器，并支持调节歌词字体大小和颜色。 |
 
 **多说无益，直接看图吧**
 
@@ -103,3 +104,15 @@
 <img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/wechat_moment.jpeg" width="20%" />
 
 就这？哈哈哈
+
+## 歌词提示器
+
+某次演唱会之前就想做个歌词提示器 今天也算做出来了 但是也已经物是人非了[捂脸]
+
+就是这个样子的：
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/gctsq_1.gif" width="40%" />
+
+还可以调节字体颜色和大小：
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/gctsq_2.gif" width="40%" />
