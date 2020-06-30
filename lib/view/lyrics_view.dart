@@ -36,7 +36,10 @@ class _LyricsViewState extends State<LyricsView> {
           child: Selector<LyricsProvider, List<LyricItemWidget>>(
             selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
             builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
-              return list == null ? activityIndicator() : lyricsListView();
+              return list == null ? activityIndicator() : () {
+                _mainTimer = Timer(const Duration(seconds: 1), start);
+                return lyricsListView();
+              }();
             },
           ),
         ),
@@ -145,6 +148,9 @@ class _LyricsViewState extends State<LyricsView> {
     return SidePanel(
       mainAxisHeight: 330,
       orientation: SidePanelOrientation.end,
+      onSwitched: (bool isOpen) {
+        isOpen ? cancel() : start();
+      },
       child: Container(
         padding: const EdgeInsets.only(
           top: 10,
@@ -193,7 +199,7 @@ class _LyricsViewState extends State<LyricsView> {
       cancel();
     } else {
       await _controller.animateToItem(
-        _controller.selectedItem + 1,
+        (_controller.hasClients ? _controller.selectedItem : 0) + 1,
         duration: const Duration(seconds: 1),
         curve: Curves.ease,
       );
@@ -208,6 +214,7 @@ class _LyricsViewState extends State<LyricsView> {
 
   void nextTimer() {
     if (!_provider.isLast()) {
+      _mainTimer.cancel();
       _mainTimer = Timer(_provider.getNextDuration(), () async {
         await animateToNext();
         nextTimer();
