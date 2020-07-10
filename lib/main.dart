@@ -1,3 +1,4 @@
+import 'package:awesome_flutter/template/app_store_card_description.dart';
 import 'package:awesome_flutter/widget/app_store_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const MyHomePage(title: 'Fine'),
       routes: viewRoutes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -29,16 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
-  Map<String, WidgetBuilder> routeMap = <String, WidgetBuilder>{};
-
-  @override
-  void initState() {
-    routeMap = viewRoutes;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -51,28 +43,18 @@ class MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      child: AnimatedList(
-        key: _listKey,
-        initialItemCount: routeMap.length,
+      child: ListView.builder(
+        itemCount: viewRoutes.length,
         physics: const BouncingScrollPhysics(),
-        controller: ScrollController(),
-        itemBuilder:
-            (BuildContext context, int index, Animation<double> animation) {
-          return SlideTransition(
-            position: animation
-                .drive(CurveTween(curve: Curves.elasticInOut))
-                .drive(Tween<Offset>(
-                  begin: const Offset(-1, 0),
-                  end: const Offset(0, 0),
-                )),
-            child: listItemBuilder(index),
-          );
-        },
+        itemBuilder: (BuildContext context, int index) =>
+            listItemBuilder(index),
       ),
+      backgroundColor: Colors.white.withOpacity(0.9),
     );
   }
 
   Widget listItemBuilder(int index) {
+    final String viewName = viewRoutes.keys.elementAt(index);
     return AppStoreCard(
       key: ValueKey<String>('$index'),
       elevation: 7,
@@ -81,14 +63,19 @@ class MyHomePageState extends State<MyHomePage> {
         vertical: 10,
         horizontal: 20,
       ),
-      showBackgroundWidget: Image.asset('assets/images/SaoSiMing.jpg'),
+      showBackgroundWidget: Image.asset('assets/images/$viewName.jpg'),
+      showForegroundWidget: AppStoreCardDescription(
+        data: getDescriptionDataByViewName(viewName),
+      ),
       detailWidget: viewRoutes.values.elementAt(index)(context),
       isAlwayShow: false,
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  AppStoreCardDescriptionData getDescriptionDataByViewName(String viewName) {
+    final List<String> viewNameList = viewName.split('_')..removeLast();
+    return AppStoreCardDescriptionData(
+      label: viewNameList.join(' ').toUpperCase(),
+    );
   }
 }
