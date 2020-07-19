@@ -13,14 +13,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-class CreativeStitchingView extends StatefulWidget {
-  const CreativeStitchingView({Key key}) : super(key: key);
+class CreativeStitchingViewV0 extends StatefulWidget {
+  const CreativeStitchingViewV0({Key key}) : super(key: key);
 
   @override
-  _CreativeStitchingViewState createState() => _CreativeStitchingViewState();
+  _CreativeStitchingViewV0State createState() =>
+      _CreativeStitchingViewV0State();
 }
 
-class _CreativeStitchingViewState extends State<CreativeStitchingView> {
+class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   final PageController _pageController = PageController();
   String _mainImagePath;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey =
