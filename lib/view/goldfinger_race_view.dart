@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:awesome_flutter/custom/animation/gesture_scale_transition.dart';
@@ -13,6 +14,9 @@ class GoldfingerRaceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
+    Socket socket;
+    int count = 0;
     return ChangeNotifierProvider<GoldfingerRaceProvider>(
       create: (BuildContext context) => GoldfingerRaceProvider(),
       child: Scaffold(
@@ -32,14 +36,24 @@ class GoldfingerRaceView extends StatelessWidget {
                   height: 20,
                   color: Colors.purple.withOpacity(0.7),
                   child: Selector<GoldfingerRaceProvider, bool>(
-                    selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.isStart,
-                    builder: (BuildContext context, bool isStart, Widget child) {
+                    selector: (BuildContext context,
+                            GoldfingerRaceProvider provider) =>
+                        provider.isStart,
+                    builder:
+                        (BuildContext context, bool isStart, Widget child) {
                       return AnimatedContainer(
-                        duration: isStart ? Provider.of<GoldfingerRaceProvider>(context, listen: false).duration : Duration.zero,
-                        width: isStart ? 0 : MediaQuery.of(context).size.width - 14,
+                        duration: isStart
+                            ? Provider.of<GoldfingerRaceProvider>(context,
+                                    listen: false)
+                                .duration
+                            : Duration.zero,
+                        width: isStart
+                            ? 0
+                            : MediaQuery.of(context).size.width - 14,
                         decoration: BoxDecoration(
                           color: isStart ? Colors.red : Colors.purple,
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
                         ),
                       );
                     },
@@ -48,16 +62,18 @@ class GoldfingerRaceView extends StatelessWidget {
               ),
               Expanded(
                 child: Consumer<GoldfingerRaceProvider>(
-                  builder: (BuildContext context, GoldfingerRaceProvider provider, Widget child) {
+                  builder: (BuildContext context,
+                      GoldfingerRaceProvider provider, Widget child) {
                     return AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
+                      duration: const Duration(seconds: 2),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
                         return FadeTransition(
                           opacity: animation,
                           child: ScaleTransition(
                             scale: animation,
                             child: child,
-                          ),  
+                          ),
                         );
                       },
                       child: Text(
@@ -66,17 +82,20 @@ class GoldfingerRaceView extends StatelessWidget {
                         maxLines: 1,
                         style: const TextStyle(
                           color: Colors.purple,
-                          fontSize: 100.0,
+                          fontSize: 150.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     );
                   },
-                ), 
+                ),
               ),
               Selector<GoldfingerRaceProvider, VoidCallback>(
-                selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.onClick,
-                builder: (BuildContext context, VoidCallback onClick, Widget child) {
+                selector:
+                    (BuildContext context, GoldfingerRaceProvider provider) =>
+                        provider.onClick,
+                builder:
+                    (BuildContext context, VoidCallback onClick, Widget child) {
                   return GestureScaleTransition(
                     callBack: onClick,
                     minScale: 0.5,
@@ -92,6 +111,17 @@ class GoldfingerRaceView extends StatelessWidget {
               const SizedBox(
                 height: 77,
               ),
+              RaisedButton(onPressed: () async {
+                socket ??= await Socket.connect('192.168.1.8', 12345);
+                socket.writeln('${count++}');
+                await socket.flush();
+              }),
+              RaisedButton(onPressed: () async {
+                final Socket socket =
+                    await Socket.connect('192.168.1.8', 12345);
+                socket.writeln('${count++}');
+                await socket.flush();
+              }),
             ],
           ),
         ),
