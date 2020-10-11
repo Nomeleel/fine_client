@@ -19,6 +19,11 @@ class _BodyMassIndexViewState extends State<BodyMassIndexView> {
           flex: 2,
           child: Container(
             color: Colors.cyan,
+            padding: const EdgeInsets.only(
+              top: 50.0,
+              left: 5.0,
+              right: 5.0,
+            ),
             child: CustomPaint(
               size: const Size.fromHeight(50),
               painter: BodyMassIndexPainter(),
