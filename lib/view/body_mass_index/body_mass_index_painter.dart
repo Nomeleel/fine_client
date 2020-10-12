@@ -24,42 +24,43 @@ class BodyMassIndexPainter extends CustomPainter {
 
     final double weightRadius = size.width / 2 * 0.9;
 
-    for (int i = 0; i < 120; i++) {
+    canvas.rotate(-pi * 0.75);
+
+    for (int i = 0; i <= 90; i++) {
       final double width = weightRadius / 195 + (i % 5 == 0 ? 2.0 : 0.0);
       final double height = weightRadius / 27 + (i % 5 == 0 ? 5.0 : 0.0);
 
       canvas.drawRect(
-          Rect.fromCenter(
-            center: Offset(0, -weightRadius * 0.7 - (height / 2)),
-            width: width,
-            height: height,
-          ),
-          Paint()..color = _textColor);
-
-      canvas.rotate(-pi * 2 / 120);
-    }
-
-    for (int i = 0; i < 12; i++) {
-      final TextPainter painter = TextPainter(
-        text: TextSpan(
-          text: '$i',
-          style: TextStyle(
-            color: _textColor,
-            fontSize: weightRadius / 9,
-          ),
+        Rect.fromCenter(
+          center: Offset(0, -weightRadius * 0.7 - (height / 2)),
+          width: width,
+          height: height,
         ),
-        textDirection: TextDirection.ltr,
-      );
-      painter.layout();
-      painter.paint(
-        canvas,
-        Offset(
-          -painter.width / 2,
-          -weightRadius + weightRadius / 18,
-        ),
+        Paint()..color = _textColor,
       );
 
-      canvas.rotate(-pi * 2 / 12);
+      if (i % 10 == 0) {
+        final TextPainter painter = TextPainter(
+          text: TextSpan(
+            text: '$i',
+            style: TextStyle(
+              color: _textColor,
+              fontSize: weightRadius / 9,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        );
+        painter.layout();
+        painter.paint(
+          canvas,
+          Offset(
+            -painter.width / 2,
+            -weightRadius + weightRadius / 18,
+          ),
+        );
+      }
+
+      canvas.rotate(pi * 2 / 120);
     }
 
     canvas.restore();
