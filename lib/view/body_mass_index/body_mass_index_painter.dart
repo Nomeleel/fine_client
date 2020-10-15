@@ -64,6 +64,19 @@ class BodyMassIndexPainter extends CustomPainter {
     }
 
     canvas.rotate(-pi * 2 / 120);
+
+    for (int i = 0; i < 4; i++) {
+      canvas.drawArc(
+        Rect.fromCircle(center: Offset.zero, radius: _painterRadius * 0.6),
+        -pi * 0.125 * i,
+        -pi * 0.125,
+        true,
+        Paint()
+          ..style = PaintingStyle.fill
+          ..color = Colors.primaries[i],
+      );
+    }
+
     _drawHeightPanel(canvas);
 
     canvas.restore();
@@ -119,7 +132,7 @@ class BodyMassIndexPainter extends CustomPainter {
     final ui.Gradient gradient = ui.Gradient.radial(
       fullCircleRect.center,
       heightPanelRadius,
-      <Color>[_backgroundHighlightColor, _backgroundColor],
+      <Color>[Colors.green[700], Colors.green],
       const <double>[0, .7],
     );
 
