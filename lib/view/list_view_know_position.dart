@@ -12,7 +12,7 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
   ScrollController controller;
   GlobalKey listViewKey;
   List<Widget> list;
-  List<GlobalKey> keyList;
+  Map<String, GlobalKey> keyMap;
 
   @override
   void initState() {
@@ -20,16 +20,16 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
     controller = ScrollController();
     listViewKey = GlobalKey();
     list = <Widget>[];
-    keyList = <GlobalKey>[];
+    keyMap = <String, GlobalKey>{};
     List<void>.generate(10, (int index) {
       list.add(Container(
-        height: 1000.0,
+        height: 1500.0,
         color: Colors.primaries[index],
         alignment: Alignment.center,
         child: Text('$index'),
       ));
       final GlobalKey key = GlobalKey();
-      keyList.add(key);
+      keyMap['$index'] = key;
       list.add(Container(
         key: key,
         height: 0.0,
@@ -43,12 +43,23 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
     return Container(
       child: Stack(
         children: <Widget>[
-          ListView.builder(
-            key: listViewKey,
-            controller: controller,
-            padding: EdgeInsets.zero,
-            itemCount: list.length,
-            itemBuilder: (BuildContext context, int index) => list[index],
+          NotificationListener<ScrollNotification>(
+            child: ListView.builder(
+              key: listViewKey,
+              controller: controller,
+              padding: EdgeInsets.zero,
+              itemCount: list.length,
+              itemBuilder: (BuildContext context, int index) => list[index],
+            ),
+            onNotification: (ScrollNotification notification) {
+              print(notification.metrics.pixels);
+              print(notification is ScrollStartNotification);
+              print(notification is ScrollEndNotification);
+              if (notification is ScrollEndNotification) {
+                keyMapForeach();
+              }
+              return true;
+            },
           ),
           const Text('A'),
           Container(
@@ -59,19 +70,25 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
                 print('------controller-------');
                 print(controller.offset);
                 print('-----------------------');
-                // ignore: avoid_function_literals_in_foreach_calls
-                keyList.forEach((GlobalKey e) {
-                  try {
-                    print(e.currentContext.findRenderObject().paintBounds);
-                    print(e.currentContext.findAncestorWidgetOfExactType<ListView>());
-                    // ignore: empty_catches
-                  } catch (e) {}
-                });
+                keyMapForeach();
               },
             ),
           )
         ],
       ),
     );
+  }
+
+  void keyMapForeach() {
+    // ignore: avoid_function_literals_in_foreach_calls
+    keyMap.forEach((String key, GlobalKey e) {
+      // 应该有方法判断listview现在正在显示的item，这个通过catch的方法太蠢了
+      try {
+        print(e.currentContext.findRenderObject().getTransformTo(null).getTranslation().y);
+        print('------------$key-----------');
+        print(e.currentContext.findAncestorWidgetOfExactType<ListView>());
+        // ignore: empty_catches
+      } catch (e) {}
+    });
   }
 }
