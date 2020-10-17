@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,6 +15,8 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
   GlobalKey listViewKey;
   List<Widget> list;
   Map<String, GlobalKey> keyMap;
+  int listIndex;
+  StreamController<int> streamController;
 
   @override
   void initState() {
@@ -21,20 +25,23 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
     listViewKey = GlobalKey();
     list = <Widget>[];
     keyMap = <String, GlobalKey>{};
+    listIndex = 0;
+    streamController = StreamController<int>();
     List<void>.generate(10, (int index) {
       list.add(Container(
+        key: ValueKey<int>(index),
         height: 1500.0,
         color: Colors.primaries[index],
         alignment: Alignment.center,
         child: Text('$index'),
       ));
-      final GlobalKey key = GlobalKey();
-      keyMap['$index'] = key;
-      list.add(Container(
-        key: key,
-        height: 0.0,
-        color: Colors.black,
-      ));
+      // final GlobalKey key = GlobalKey();
+      // keyMap['$index'] = key;
+      // list.add(Container(
+      //   key: key,
+      //   height: 0.0,
+      //   color: Colors.black,
+      // ));
     });
   }
 
@@ -49,31 +56,62 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
               controller: controller,
               padding: EdgeInsets.zero,
               itemCount: list.length,
-              itemBuilder: (BuildContext context, int index) => list[index],
+              cacheExtent: 0.0,
+              itemBuilder: (BuildContext context, int index) {
+                final Widget item = list[index];
+                final int value = (item.key as ValueKey<int>)?.value;
+                if (value != listIndex) {
+                  listIndex = value;
+                  streamController.add(value);
+                }
+                print('-----------$value----------');
+                return item;
+              },
             ),
             onNotification: (ScrollNotification notification) {
-              print(notification.metrics.pixels);
-              print(notification is ScrollStartNotification);
-              print(notification is ScrollEndNotification);
+              // print(notification.metrics.pixels);
+              // print(notification is ScrollStartNotification);
+              // print(notification is ScrollEndNotification);
               if (notification is ScrollEndNotification) {
                 keyMapForeach();
               }
               return true;
             },
           ),
-          const Text('A'),
-          Container(
-            alignment: Alignment.center,
-            child: RaisedButton(
-              child: const Text('Go'),
-              onPressed: () {
-                print('------controller-------');
-                print(controller.offset);
-                print('-----------------------');
-                keyMapForeach();
-              },
-            ),
-          )
+          StreamBuilder<int>(
+            stream: streamController.stream,
+            initialData: listIndex,
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+              print(snapshot.connectionState);
+              if (snapshot.connectionState == ConnectionState.active || snapshot.data != null) {
+                return Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${snapshot.data}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.0,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          // Container(
+          //   alignment: Alignment.center,
+          //   child: RaisedButton(
+          //     child: const Text('Go'),
+          //     onPressed: () {
+          //       print('------controller-------');
+          //       print(controller.offset);
+          //       print('-----------------------');
+          //       keyMapForeach();
+          //     },
+          //   ),
+          // )
         ],
       ),
     );
@@ -92,3 +130,9 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
     });
   }
 }
+
+// extension ValueKeyExtension on ValueKey {
+//   int getIntValue() {
+//     return 1;
+//   }
+// }
