@@ -13,13 +13,13 @@ class GithubTrendingView extends StatefulWidget {
 
 class _GithubTrendingViewState extends State<GithubTrendingView> {
   Dio _dio;
-  List<String> _trendingList;
+  List<TrendingItem> _trendingList;
 
   @override
   void initState() {
     super.initState();
     _dio = Dio();
-    _trendingList = <String>[];
+    _trendingList = <TrendingItem>[];
   }
 
   @override
@@ -45,11 +45,12 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
             child: ListView.separated(
               itemCount: _trendingList.length,
               itemBuilder: (BuildContext context, int index) {
+                final TrendingItem item = _trendingList[index];
                 return Container(
                   height: 50.0,
-                  color: Colors.primaries[index % 15],
+                  color: Color(item.languageHexColor ?? 0xffffffff),
                   alignment: Alignment.centerLeft,
-                  child: Text(_trendingList[index]),
+                  child: Text(item.repository),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -68,7 +69,7 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
     );
   }
 
-  Future<List<String>> getTrendingList() async {
+  Future<List<TrendingItem>> getTrendingList() async {
     final Response<dynamic> html = await _dio.get<dynamic>('https://github.com/trending');
     final dom.Document document = parser.parse(html.data);
     print(document.getElementsByTagName('article').length);
@@ -80,26 +81,53 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
   }
 
   void parseArticle(dom.Element article) {
+    final TrendingItem trendingItem = TrendingItem();
     // Repo
-    final String repo = article.getElementsByTagName('a')[1].attributes['href'].substring(1);
-    print('Repo: $repo');
-    _trendingList.add(repo);
+    trendingItem.repository = article.getElementsByTagName('a')[1].attributes['href'].substring(1);
     // Description
     final List<dom.Element> description = article.getElementsByTagName('p');
     if (description.isNotEmpty) {
-      print('Description: ${description.first.text.trim()}');
+      trendingItem.description = description.first.text.trim();
     }
     // Language
     final List<dom.Element> lang = article.getElementsByClassName('repo-language-color');
     if (lang.isNotEmpty) {
-      print('Language: ${lang[0].attributes["style"].split(" ")[1] + "-" + lang[0].nextElementSibling.text.trim()}');
+      trendingItem.languageHexColor = int.parse(lang[0].attributes['style'].split(' ')[1].replaceFirst('#', '0xff'));
+      trendingItem.language = lang[0].nextElementSibling.text.trim();
     }
     // Start & Fork
     final List<dom.Element> startFork = article.getElementsByClassName('muted-link d-inline-block mr-3');
-    print('Start: ${startFork[0].text.trim()}');
-    print('Fork: ${startFork[1].text.trim()}');
+    trendingItem.startStr = startFork[0].text.trim();
+    trendingItem.forkStr = startFork[1].text.trim();
     // Trending
-    print(article.getElementsByClassName('d-inline-block float-sm-right')[0].text.trim());
+    trendingItem.trending = article.getElementsByClassName('d-inline-block float-sm-right')[0].text.trim();
+    print(trendingItem);
+    _trendingList.add(trendingItem);
     print('------------------------------------------------------------');
+  }
+}
+
+class TrendingItem {
+  TrendingItem({
+    this.repository,
+    this.description,
+    this.languageHexColor,
+    this.language,
+    this.startStr,
+    this.forkStr,
+    this.trending,
+  });
+
+  String repository;
+  String description;
+  int languageHexColor;
+  String language;
+  String startStr;
+  String forkStr;
+  String trending;
+
+  @override
+  String toString() {
+    return 'Repository: $repository;\nDescription: $description;\nLanguage: $languageHexColor-$language;\nStart: $startStr;\nFork: $forkStr;\nTrending: $trending;';
   }
 }
