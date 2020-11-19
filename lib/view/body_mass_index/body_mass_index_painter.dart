@@ -16,10 +16,10 @@ class BodyMassIndexPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.save();
     _painterRadius = size.width / 2;
 
     canvas.translate(_painterRadius, _painterRadius);
+    canvas.save();
     _drawBackground(canvas);
 
     final double weightRadius = size.width / 2 * 0.9;
@@ -62,7 +62,7 @@ class BodyMassIndexPainter extends CustomPainter {
 
       canvas.rotate(pi * 2 / 120);
     }
-
+    
     canvas.rotate(-pi * 2 / 120);
 
     for (int i = 0; i < 4; i++) {
@@ -76,13 +76,14 @@ class BodyMassIndexPainter extends CustomPainter {
           ..color = Colors.primaries[i],
       );
     }
+    canvas.restore();
 
     _drawHeightPanel(canvas);
-
-    canvas.restore();
   }
 
   void _drawHeightPanel(Canvas canvas) {
+    canvas.rotate(pi * 2 / 2.655);
+
     _drawHeightBackground(canvas);
 
     final double heightRadius = _painterRadius * 0.6;
