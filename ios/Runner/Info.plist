@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Fine</string>
+	<string>fine_client</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -41,9 +41,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>需要您的同意Fine才能访问相册</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>需要您的同意Fine才能导出图片到相册</string>
 </dict>
 </plist>
