@@ -1,0 +1,48 @@
+{
+    "cardDataList": [
+        {
+            "imagePath": "assets/images/SaoSiMing.jpg",
+            "videoPath": "",
+            "descriptionMode": "classic",
+            "descriptionData": {
+                "label": "秦时明月",
+                "title": "少司命是我的，阴阳组件也是我的",
+                "info": "老婆，你快说句话啊"
+            },
+            "detailViewRouteName": "yin_yang_switch_view"
+        },
+        {
+            "imagePath": "assets/images/LuoWang.png",
+            "videoPath": "",
+            "descriptionMode": "classic",
+            "descriptionData": {
+                "label": "秦时明月",
+                "title": "罗网之心，人人皆知",
+                "info": "遍地撒网，重点捕鱼"
+            },
+            "detailViewRouteName": "grid_paper_exp_view"
+        },
+        {
+            "imagePath": "assets/images/YanLu.gif",
+            "videoPath": "",
+            "descriptionMode": "classic",
+            "descriptionData": {
+                "label": "秦时明月",
+                "title": "君子无争，含光无形，坐忘无心",
+                "info": "上善若水，坐忘心法"
+            },
+            "detailViewRouteName": "water_wave_view"
+        },
+        {
+            "imagePath": "assets/images/BaoErJie.jpg",
+            "videoPath": "",
+            "descriptionMode": "classic",
+            "descriptionData": {
+                "label": "一人之下",
+                "title": "社会我宝儿姐必须在C位",
+                "info": "他们总说我瓜 其实我一点儿也不瓜 大多时候我都机智的一逼"
+            },
+            "detailViewRouteName": "creative_stitching_view"
+        }
+    ]
+}
