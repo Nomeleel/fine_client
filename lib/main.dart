@@ -38,7 +38,7 @@ class MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18.5,
             fontWeight: FontWeight.w100,
           ),

@@ -65,7 +65,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                       : Colors.blueAccent,
                   borderRadius: const BorderRadius.all(Radius.circular(25)),
                 ),
-                child: Text(
+                child: const Text(
                   '上传图片',
                   style: TextStyle(
                     fontSize: 18,
@@ -88,13 +88,13 @@ class SudokuImageViewState extends State<SudokuImageView> {
               width: 200,
               height: 50,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.all(
+                borderRadius: BorderRadius.all(
                   Radius.circular(25),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 '选择图片',
                 style: TextStyle(
                   fontSize: 18,
@@ -125,7 +125,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                           Radius.circular(25),
                         ),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.clear,
                         size: 35,
                       )),
@@ -137,7 +137,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
   }
 
   Future<void> pickImage() async {
-    final File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final File image = File((await ImagePicker().getImage(source: ImageSource.gallery)).path);
 
     setState(() {
       _image = image;

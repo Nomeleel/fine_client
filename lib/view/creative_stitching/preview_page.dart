@@ -28,13 +28,11 @@ class _PreviewPageState extends State<PreviewPage> {
         nextActionLabel: '导出',
         nextAction: () async {
           if (_finalByteDataList != null) {
-            await Future.forEach(_finalByteDataList,
-                (ByteData imageByteData) async {
-              await ImageGallerySaver.saveImage(
-                  imageByteData.buffer.asUint8List());
+            await Future.forEach(_finalByteDataList, (ByteData imageByteData) async {
+              await ImageGallerySaver.saveImage(imageByteData.buffer.asUint8List());
             });
 
-            Scaffold.of(context).showSnackBar(const SnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('导出成功!'),
             ));
           }
@@ -43,8 +41,7 @@ class _PreviewPageState extends State<PreviewPage> {
       body: Center(
         child: FutureBuilder<List<ByteData>>(
           future: creativeStitching(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<ByteData>> asyncSnapshot) {
+          builder: (BuildContext context, AsyncSnapshot<List<ByteData>> asyncSnapshot) {
             switch (asyncSnapshot.connectionState) {
               case ConnectionState.done:
                 if (asyncSnapshot.data != null) {
@@ -57,7 +54,7 @@ class _PreviewPageState extends State<PreviewPage> {
                 }
                 break;
               default:
-                return CircularProgressIndicator(
+                return const CircularProgressIndicator(
                   backgroundColor: Colors.transparent,
                 );
             }
@@ -69,8 +66,7 @@ class _PreviewPageState extends State<PreviewPage> {
 
   Future<List<ByteData>> creativeStitching() async {
     final CreativeStitching cs = CreativeStitching.of(context);
-    return await creativeStitchingByFilePath(
-        cs.mainImagePath, cs.multipleImagePathList,
+    return await creativeStitchingByFilePath(cs.mainImagePath, cs.multipleImagePathList,
         mainImageCropRect: cs.mainImageCropRect);
   }
 
@@ -81,8 +77,7 @@ class _PreviewPageState extends State<PreviewPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ClipRRect(
-            child: Image.asset('assets/images/SaoSiMing.jpg',
-                height: 45, width: 45, fit: BoxFit.cover),
+            child: Image.asset('assets/images/SaoSiMing.jpg', height: 45, width: 45, fit: BoxFit.cover),
             borderRadius: const BorderRadius.all(Radius.circular(6)),
           ),
           const SizedBox(
@@ -130,18 +125,18 @@ class _PreviewPageState extends State<PreviewPage> {
                 child: imageGridView(),
               ),
               Row(
-                children: <Widget>[
-                  const Text(
+                children: const <Widget>[
+                  Text(
                     '7天前',
                     style: TextStyle(
                       color: Color.fromARGB(255, 170, 170, 170),
                     ),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   Icon(
                     Icons.more,
                     size: 23.0,
-                    color: const Color.fromARGB(255, 84, 92, 137),
+                    color: Color.fromARGB(255, 84, 92, 137),
                   ),
                 ],
               ),
@@ -208,8 +203,7 @@ class _PreviewPageState extends State<PreviewPage> {
   }
 
   Widget heroWidget(Widget widget) {
-    final String uniqueTag =
-        DateTime.now().toString() + math.Random().nextInt(77).toString();
+    final String uniqueTag = DateTime.now().toString() + math.Random().nextInt(77).toString();
     return GestureDetector(
       child: Hero(
         tag: uniqueTag,
@@ -217,8 +211,7 @@ class _PreviewPageState extends State<PreviewPage> {
       ),
       onTap: () {
         Navigator.of(context).push<dynamic>(PageRouteBuilder<dynamic>(
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Hero(
               tag: uniqueTag,
               child: Container(

@@ -43,11 +43,11 @@ class FlushBarHelper {
       message: message,
       backgroundColor: Colors.greenAccent,
       duration: duration,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Center(
           child: Text(
             actionLabel,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
             ),
@@ -71,11 +71,11 @@ class FlushBarHelper {
       message: message,
       backgroundColor: Colors.redAccent,
       duration: duration,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Center(
           child: Text(
             actionLabel,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
             ),

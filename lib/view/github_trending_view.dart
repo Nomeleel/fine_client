@@ -33,7 +33,7 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
           Container(
             height: 100.0,
             alignment: Alignment.center,
-            child: RaisedButton(
+            child: TextButton(
               child: const Text('Go'),
               onPressed: () async {
                 _trendingList = await getTrendingList();

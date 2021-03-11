@@ -74,7 +74,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
               actionLabel: '选择图片',
               action: () async {
                 _mainImagePath =
-                    (await ImagePicker.pickImage(source: ImageSource.gallery))
+                    (await ImagePicker().getImage(source: ImageSource.gallery))
                         .path;
                 setState(() {});
               })
@@ -116,13 +116,13 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           width: MediaQuery.of(context).size.width * 0.618,
           height: 50,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.blueAccent,
-            borderRadius: const BorderRadius.all(Radius.circular(25)),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
           child: Text(
             actionLabel,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               color: Colors.white,
             ),
@@ -205,7 +205,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                   }
                   break;
                 default:
-                  return CircularProgressIndicator(
+                  return const CircularProgressIndicator(
                     backgroundColor: Colors.transparent,
                   );
               }
@@ -270,18 +270,18 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                 child: imageGridView(),
               ),
               Row(
-                children: <Widget>[
-                  const Text(
+                children: const <Widget>[
+                  Text(
                     '7天前',
                     style: TextStyle(
                       color: Color.fromARGB(255, 170, 170, 170),
                     ),
                   ),
-                  const Spacer(),
+                  Spacer(),
                   Icon(
                     Icons.more,
                     size: 23.0,
-                    color: const Color.fromARGB(255, 84, 92, 137),
+                    color: Color.fromARGB(255, 84, 92, 137),
                   ),
                 ],
               ),
@@ -368,7 +368,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
             width: 60,
             height: 30,
             child: GestureDetector(
-              child: Align(
+              child: const Align(
                 alignment: Alignment.centerLeft,
                 child: Icon(Icons.arrow_back_ios),
               ),
@@ -388,7 +388,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
             child: Text(
               description ?? '',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),

@@ -40,8 +40,6 @@ class GoldfingerRaceProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _end() {}
-
   void _reStart() {
     _init();
     notifyListeners();

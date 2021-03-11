@@ -121,19 +121,19 @@ class _LyricsViewState extends State<LyricsView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget> [
-        RaisedButton(
+        ElevatedButton(
           onPressed: animateToNext,
           child: const Text('Next'),
         ),
-        RaisedButton(
+        ElevatedButton(
           onPressed: start,
           child: const Text('Start'),
         ),
-        RaisedButton(
+        ElevatedButton(
           onPressed: cancel,
           child: const Text('End'),
         ),
-        RaisedButton(
+        ElevatedButton(
           onPressed: () => _provider.setDecoration(fontColor: Colors.black),
           child: const Text('Color'),
         ),

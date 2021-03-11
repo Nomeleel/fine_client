@@ -54,7 +54,7 @@ class TopBar extends StatelessWidget {
             width: 60,
             height: 30,
             child: GestureDetector(
-              child: Align(
+              child: const Align(
                 alignment: Alignment.centerLeft,
                 child: Icon(Icons.arrow_back_ios),
               ),
@@ -77,7 +77,7 @@ class TopBar extends StatelessWidget {
             child: Text(
               title ?? '',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
               ),
             ),

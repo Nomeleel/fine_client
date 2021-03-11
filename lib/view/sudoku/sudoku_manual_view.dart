@@ -87,11 +87,11 @@ class SudokuManualViewState extends State<SudokuManualView> {
                 width: MediaQuery.of(context).size.width * 0.618,
                 height: 50,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.blueAccent,
-                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
                 ),
-                child: Text(
+                child: const Text(
                   '上传字符串',
                   style: TextStyle(
                     fontSize: 18,
@@ -117,14 +117,14 @@ class SudokuManualViewState extends State<SudokuManualView> {
           height: 50,
           alignment: Alignment.center,
           child: digit == 0
-              ? Icon(
+              ? const Icon(
                   Icons.clear,
                   color: Colors.red,
                   size: 30,
                 )
               : Text(
                   digit.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 27,
                     color: Colors.white,
                   ),
@@ -146,7 +146,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
             : Center(
                 child: Text(
                   cell.digit.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 30,
                     color: Colors.black,
                   ),

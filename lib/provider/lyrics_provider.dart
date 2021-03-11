@@ -31,9 +31,7 @@ class LyricsProvider with ChangeNotifier{
 
   void generateLyricItemWidgetList() {
     // Only created on the first load and refresh the lyric list page.
-    _lyricItemWidgetList ??= List<LyricItemWidget>(_lyricItemList.length);
-    _lyricItemWidgetList.fillRange(0, _lyricItemList.length, 
-      normalLyricItemWidget());
+    _lyricItemWidgetList = List<LyricItemWidget>.filled(_lyricItemList.length, normalLyricItemWidget());
 
     _lyricItemWidgetList[_currentIndex] = activeLyricItemWidget();
   }
