@@ -2,17 +2,18 @@ import 'package:awesome_flutter/template/app_store_card_description.dart';
 import 'package:awesome_flutter/widget/app_store_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:widget_scan/route/view_routes.dart';
+import 'route/view_routes.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       title: 'Fine',
-      theme: CupertinoThemeData(
-        barBackgroundColor: Colors.white,
+      theme: ThemeData(
+        platform: TargetPlatform.iOS,
+        primaryColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
       ),
       home: const MyHomePage(title: 'Fine'),
@@ -33,9 +34,9 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
           widget.title,
           style: TextStyle(
             fontSize: 18.5,
@@ -43,11 +44,10 @@ class MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      child: ListView.builder(
+      body: ListView.builder(
         itemCount: viewRoutes.length,
         physics: const BouncingScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) =>
-            listItemBuilder(index),
+        itemBuilder: (BuildContext context, int index) => listItemBuilder(index),
       ),
       backgroundColor: Colors.white.withOpacity(0.9),
     );

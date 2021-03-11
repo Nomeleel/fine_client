@@ -11,7 +11,7 @@ class GoldfingerRaceProvider with ChangeNotifier {
   int get clickedCount => _clickedCount;
 
   CurrentState _state;
-  
+
   bool get isStart => _state != CurrentState.none;
 
   Duration _duration;
@@ -23,7 +23,7 @@ class GoldfingerRaceProvider with ChangeNotifier {
   void _init() {
     _clickedCount = 0;
     _state = CurrentState.none;
-    _duration = const Duration(seconds: 7);
+    _duration = const Duration(seconds: 30);
     _onClick = _start;
   }
 
@@ -40,9 +40,7 @@ class GoldfingerRaceProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _end() {
-
-  }
+  void _end() {}
 
   void _reStart() {
     _init();

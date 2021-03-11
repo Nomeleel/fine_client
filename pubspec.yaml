@@ -23,22 +23,22 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   awesome_flutter:
-    # git: git@github.com:Nomeleel/awesome_flutter.git
     path: ../awesome_flutter
-  widget_scan:
-    git: git@github.com:Nomeleel/widget_scan.git
   cupertino_icons: ^0.1.2
   image_picker: ^0.6.3+4
   dio: ^3.0.9
   provider: ^4.0.4
   flushbar: ^1.10.2
   wechat_assets_picker: 4.2.2
-  extended_image: 1.2.0
-  image_gallery_saver: 1.2.2
+  extended_image: 1.6.0
+  image_gallery_saver: ^1.2.2
+  html: ^0.15.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  widget_scan:
+    path: ../widget_scan
 
 
 # For information on the generic Dart part of this file, see the

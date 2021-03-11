@@ -28,23 +28,25 @@ class _LyricsViewState extends State<LyricsView> {
   @override
   Widget build(BuildContext context) {
     print('root build');
-    return PreferredOrientations(
-      orientations: const <DeviceOrientation>[DeviceOrientation.landscapeRight,],
-      child: scaffold(
-        child: ChangeNotifierProvider<LyricsProvider>.value(
-          value: _provider..init(),
-          child: Selector<LyricsProvider, List<LyricItemWidget>>(
-            selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
-            builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
-              return list == null ? activityIndicator() : () {
-                _mainTimer = Timer(const Duration(seconds: 1), start);
-                return lyricsListView();
-              }();
-            },
+    return Scaffold(
+      body: PreferredOrientations(
+        orientations: const <DeviceOrientation>[DeviceOrientation.landscapeRight,],
+        child: scaffold(
+          child: ChangeNotifierProvider<LyricsProvider>.value(
+            value: _provider..init(),
+            child: Selector<LyricsProvider, List<LyricItemWidget>>(
+              selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
+              builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
+                return list == null ? activityIndicator() : () {
+                  _mainTimer = Timer(const Duration(seconds: 1), start);
+                  return lyricsListView();
+                }();
+              },
+            ),
           ),
-        ),
-        control: controlPanel(),
-      ), 
+          control: controlPanel(),
+        ), 
+      ),
     );
   }
 
@@ -101,6 +103,8 @@ class _LyricsViewState extends State<LyricsView> {
                 style: TextStyle(
                   fontSize: widget.fontSize,
                   color: widget.fontColor,
+                  height: 1.0,
+                  //decoration: TextDecoration.none,
                 ),
               ),
             );
@@ -184,7 +188,7 @@ class _LyricsViewState extends State<LyricsView> {
             CupertinoSliderWrapper(
               value: _provider.fontSize,
               min: 10,
-              max: 80,
+              max: 120,
               activeColor: Colors.purple,
               onChanged: (double value) => _provider.setDecoration(fontSize: value),
             ),
@@ -195,15 +199,11 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   Future<void> animateToNext() async {
-    if (_provider.isLast()) {
-      cancel();
-    } else {
-      await _controller.animateToItem(
-        (_controller.hasClients ? _controller.selectedItem : 0) + 1,
-        duration: const Duration(seconds: 1),
-        curve: Curves.ease,
-      );
-    }
+    await _controller.animateToItem(
+      ((_controller.hasClients ? _controller.selectedItem : 0) + 1) % _provider.lyricItemWidgetList.length,
+      duration: const Duration(seconds: 1),
+      curve: Curves.ease,
+    );
   }
 
   void start() {
