@@ -16,7 +16,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with SingleTickerProvid
   ScrollController turns;
   Widget prizeWheelPaint;
 
-  double get turnsValue => !turns.hasClients ? .0 : turns.offset / 300.0;
+  double get turnsValue => !turns.hasClients ? .0 : turns.offset / 260.0;
   double paintWidth;
 
   @override
@@ -31,7 +31,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with SingleTickerProvid
         size: Size.square(paintWidth),
         painter: BodyMassIndexPainter(),
       );
-      turns.jumpTo(12345.0);
+      turns.jumpTo(2.0);
     });
   }
 
@@ -46,17 +46,12 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with SingleTickerProvid
           Expanded(
             flex: 2,
             child: Container(
+              color: Colors.cyan,
               alignment: Alignment.center,
               padding: const EdgeInsets.only(
                 top: 50.0,
                 left: 5.0,
                 right: 5.0,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.cyan,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(500.0),
-                ),
               ),
               child: AspectRatio(
                 aspectRatio: 1.0,
@@ -73,18 +68,22 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with SingleTickerProvid
                         );
                       },
                     ),
-                    ListView.builder(
+                    ListWheelScrollView.useDelegate(
                       controller: turns,
-                      itemCount: 777,
+                      physics: const BouncingScrollPhysics(),
                       itemExtent: 77.77,
-                      itemBuilder: (BuildContext context, int index) {
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.primaries[index % 15].withOpacity(.2),
-                          ),
-                        );
-                      },
-                    ),
+                      diameterRatio: 3.14,
+                      perspective: 0.01,
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        builder: (BuildContext context, int index) {
+                          return DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.primaries[index % 15].withOpacity(.2),
+                            ),
+                          );
+                        },
+                      ),
+                    )
                   ],
                 ),
               ),
