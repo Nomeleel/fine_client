@@ -30,7 +30,7 @@ class GoldfingerRaceView extends StatelessWidget {
                 height: MediaQueryData.fromWindow(window).padding.top,
               ),
               ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.circular(10),
                 child: Container(
                   alignment: Alignment.topLeft,
                   height: 20,
@@ -45,7 +45,7 @@ class GoldfingerRaceView extends StatelessWidget {
                         width: isStart ? 0 : MediaQuery.of(context).size.width - 14,
                         decoration: BoxDecoration(
                           color: isStart ? Colors.red : Colors.purple,
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       );
                     },

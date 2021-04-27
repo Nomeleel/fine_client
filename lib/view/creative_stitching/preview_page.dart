@@ -78,7 +78,7 @@ class _PreviewPageState extends State<PreviewPage> {
         children: <Widget>[
           ClipRRect(
             child: Image.asset('assets/images/SaoSiMing.jpg', height: 45, width: 45, fit: BoxFit.cover),
-            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            borderRadius: BorderRadius.circular(6.0),
           ),
           const SizedBox(
             width: 10,

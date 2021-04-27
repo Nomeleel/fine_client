@@ -116,9 +116,9 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           width: MediaQuery.of(context).size.width * 0.618,
           height: 50,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.blueAccent,
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderRadius: BorderRadius.circular(25.0),
           ),
           child: Text(
             actionLabel,
@@ -223,7 +223,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           ClipRRect(
             child: Image.asset('assets/images/SaoSiMing.jpg',
                 height: 45, width: 45, fit: BoxFit.cover),
-            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            borderRadius: BorderRadius.circular(6),
           ),
           const SizedBox(
             width: 10,
@@ -405,7 +405,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
               ),
               color: Colors.green[500],
               padding: EdgeInsets.zero,
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              borderRadius: BorderRadius.circular(5),
               onPressed: () {
                 if (beforeNextAction != null) {
                   beforeNextAction();

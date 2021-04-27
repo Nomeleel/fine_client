@@ -94,7 +94,7 @@ class TopBar extends StatelessWidget {
               ),
               color: Colors.green[500],
               padding: EdgeInsets.zero,
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              borderRadius: BorderRadius.circular(5.0),
               onPressed: nextAction,
             ),
           ),

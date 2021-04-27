@@ -91,7 +91,7 @@ class _PrizeWheelTwoScrollDriveViewState extends State<PrizeWheelTwoScrollDriveV
                         builder: (BuildContext context, int index) {
                           return Container(
                             decoration: BoxDecoration(
-                              color: Colors.primaries[index % 15].withOpacity(.2),
+                              color: Colors.primaries[index % Colors.primaries.length].withOpacity(.2),
                             ),
                           );
                         },
@@ -105,7 +105,7 @@ class _PrizeWheelTwoScrollDriveViewState extends State<PrizeWheelTwoScrollDriveV
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
                           decoration: BoxDecoration(
-                            color: Colors.primaries[index % 15].withOpacity(.2),
+                            color: Colors.primaries[index % Colors.primaries.length].withOpacity(.2),
                           ),
                         );
                       },

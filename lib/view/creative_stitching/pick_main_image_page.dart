@@ -56,9 +56,9 @@ class _PickMainImagePageState extends State<PickMainImagePage> {
           width: MediaQuery.of(context).size.width * 0.618,
           height: 50,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.blueAccent,
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderRadius: BorderRadius.circular(25.0),
           ),
           child: Text(
             actionLabel,

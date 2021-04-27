@@ -63,7 +63,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                   color: _image == null
                       ? CupertinoColors.quaternarySystemFill
                       : Colors.blueAccent,
-                  borderRadius: const BorderRadius.all(Radius.circular(25)),
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
                 child: const Text(
                   '上传图片',
@@ -88,11 +88,9 @@ class SudokuImageViewState extends State<SudokuImageView> {
               width: 200,
               height: 50,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25),
-                ),
+                borderRadius: BorderRadius.circular(25.0),
               ),
               child: const Text(
                 '选择图片',
@@ -121,9 +119,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                       height: 45,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(25),
-                        ),
+                        borderRadius:BorderRadius.circular(25.0),
                       ),
                       child: const Icon(
                         Icons.clear,

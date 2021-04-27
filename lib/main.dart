@@ -58,7 +58,7 @@ class MyHomePageState extends State<MyHomePage> {
     return AppStoreCard(
       key: ValueKey<String>('$index'),
       elevation: 7,
-      radius: const BorderRadius.all(Radius.circular(20)),
+      radius: BorderRadius.circular(20),
       padding: const EdgeInsets.symmetric(
         vertical: 10,
         horizontal: 20,

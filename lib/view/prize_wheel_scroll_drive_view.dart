@@ -74,7 +74,7 @@ class _PrizeWheelScrollDriveViewState extends State<PrizeWheelScrollDriveView> w
                         builder: (BuildContext context, int index) {
                           return DecoratedBox(
                             decoration: BoxDecoration(
-                              color: Colors.primaries[index % 15].withOpacity(.2),
+                              color: Colors.primaries[index % Colors.primaries.length].withOpacity(.2),
                             ),
                           );
                         },

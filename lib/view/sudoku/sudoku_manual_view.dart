@@ -87,9 +87,9 @@ class SudokuManualViewState extends State<SudokuManualView> {
                 width: MediaQuery.of(context).size.width * 0.618,
                 height: 50,
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.blueAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
                 child: const Text(
                   '上传字符串',
@@ -110,7 +110,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
   Widget digitButton(int digit) {
     return Material(
       color: Colors.blueAccent,
-      borderRadius: const BorderRadius.all(Radius.circular(5)),
+      borderRadius: BorderRadius.circular(5.0),
       child: InkWell(
         child: Container(
           width: 35,

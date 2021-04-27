@@ -30,22 +30,26 @@ class _LyricsViewState extends State<LyricsView> {
     print('root build');
     return Scaffold(
       body: PreferredOrientations(
-        orientations: const <DeviceOrientation>[DeviceOrientation.landscapeRight,],
+        orientations: const <DeviceOrientation>[
+          DeviceOrientation.landscapeRight,
+        ],
         child: scaffold(
           child: ChangeNotifierProvider<LyricsProvider>.value(
             value: _provider..init(),
             child: Selector<LyricsProvider, List<LyricItemWidget>>(
               selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
               builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
-                return list == null ? activityIndicator() : () {
-                  _mainTimer = Timer(const Duration(seconds: 1), start);
-                  return lyricsListView();
-                }();
+                return list == null
+                    ? activityIndicator()
+                    : () {
+                        _mainTimer = Timer(const Duration(seconds: 1), start);
+                        return lyricsListView();
+                      }();
               },
             ),
           ),
           control: controlPanel(),
-        ), 
+        ),
       ),
     );
   }
@@ -77,7 +81,9 @@ class _LyricsViewState extends State<LyricsView> {
 
   Widget activityIndicator() {
     return const Center(
-      child: CupertinoActivityIndicator(radius: 15,),
+      child: CupertinoActivityIndicator(
+        radius: 15,
+      ),
     );
   }
 
@@ -88,29 +94,28 @@ class _LyricsViewState extends State<LyricsView> {
       perspective: 0.0001,
       itemExtent: MediaQuery.of(context).size.height / 3,
       children: List<Widget>.generate(
-        _provider.lyricItemWidgetList.length,
-        (int index) => Selector<LyricsProvider, LyricItemWidget>(
-          selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
-          builder: (BuildContext context, LyricItemWidget widget, Widget child) {
-            print('${DateTime.now()} build: $index');
-            return Container(
-              alignment: Alignment.center,
-              //color: Colors.purple,
-              child: Text(
-                _provider.lyricItemList[index].text,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: widget.fontSize,
-                  color: widget.fontColor,
-                  height: 1.0,
-                  //decoration: TextDecoration.none,
-                ),
-              ),
-            );
-          },
-        )
-      ),
+          _provider.lyricItemWidgetList.length,
+          (int index) => Selector<LyricsProvider, LyricItemWidget>(
+                selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
+                builder: (BuildContext context, LyricItemWidget widget, Widget child) {
+                  print('${DateTime.now()} build: $index');
+                  return Container(
+                    alignment: Alignment.center,
+                    //color: Colors.purple,
+                    child: Text(
+                      _provider.lyricItemList[index].text,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: widget.fontSize,
+                        color: widget.fontColor,
+                        height: 1.0,
+                        //decoration: TextDecoration.none,
+                      ),
+                    ),
+                  );
+                },
+              )),
       onSelectedItemChanged: (int index) {
         _provider.setCurrentIndex(index);
       },
@@ -120,7 +125,7 @@ class _LyricsViewState extends State<LyricsView> {
   Widget controlBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget> [
+      children: <Widget>[
         ElevatedButton(
           onPressed: animateToNext,
           child: const Text('Next'),
@@ -164,35 +169,37 @@ class _LyricsViewState extends State<LyricsView> {
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.8),
         ),
-        child: ListView(
+        child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          children: <Widget>[
-            const Text(
-              '字体颜色',
-              style: TextStyle(
-                fontSize: 25,
+          child: Column(
+            children: <Widget>[
+              const Text(
+                '字体颜色',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
               ),
-            ),
-            ColorPicker(
-              color: _provider.fontColor,
-              onColorChanged: (Color color) {
-                _provider.setDecoration(fontColor: color);
-              },
-            ),
-            const Text(
-              '字体大小',
-              style: TextStyle(
-                fontSize: 25,
+              ColorPicker(
+                color: _provider.fontColor,
+                onColorChanged: (Color color) {
+                  _provider.setDecoration(fontColor: color);
+                },
               ),
-            ),
-            CupertinoSliderWrapper(
-              value: _provider.fontSize,
-              min: 10,
-              max: 120,
-              activeColor: Colors.purple,
-              onChanged: (double value) => _provider.setDecoration(fontSize: value),
-            ),
-          ],
+              const Text(
+                '字体大小',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
+              CupertinoSliderWrapper(
+                value: _provider.fontSize,
+                min: 10,
+                max: 120,
+                activeColor: Colors.purple,
+                onChanged: (double value) => _provider.setDecoration(fontSize: value),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -225,5 +232,4 @@ class _LyricsViewState extends State<LyricsView> {
   void cancel() {
     _mainTimer.cancel();
   }
-
 }
