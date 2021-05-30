@@ -26,8 +26,7 @@ class _PickMultipleImagePageState extends State<PickMultipleImagePage> {
         future: pickAssets(),
         builder:
             (BuildContext context, AsyncSnapshot<List<String>> asyncSnapshot) {
-          if (asyncSnapshot.connectionState == ConnectionState.done &&
-              asyncSnapshot.data != null) {
+          if (asyncSnapshot.hasData) {
             CreativeStitching.of(context).multipleImagePathList =
                 asyncSnapshot.data;
             return GridView.count(

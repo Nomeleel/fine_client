@@ -42,22 +42,20 @@ class _PreviewPageState extends State<PreviewPage> {
         child: FutureBuilder<List<ByteData>>(
           future: creativeStitching(),
           builder: (BuildContext context, AsyncSnapshot<List<ByteData>> asyncSnapshot) {
-            switch (asyncSnapshot.connectionState) {
-              case ConnectionState.done:
-                if (asyncSnapshot.data != null) {
-                  _finalByteDataList = asyncSnapshot.data;
-                  return moment();
-                } else {
-                  return const Center(
-                    child: Text('Please retry!'),
-                  );
-                }
-                break;
-              default:
-                return const CircularProgressIndicator(
-                  backgroundColor: Colors.transparent,
-                );
+            if (asyncSnapshot.hasError) {
+              return const Center(
+                child: Text('Please retry!'),
+              );
             }
+
+            if (asyncSnapshot.hasData) {
+              _finalByteDataList = asyncSnapshot.data;
+              return moment();
+            }
+
+            return const CircularProgressIndicator(
+              backgroundColor: Colors.transparent,
+            );
           },
         ),
       ),
