@@ -64,7 +64,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with TickerProviderStat
                     speed = .0;
                   },
                   onPointerMove: (PointerMoveEvent event) {
-                    final Offset endPoint = event.position;
+                    final Offset endPoint = event.localPosition;
                     final Offset startPoint = endPoint - event.delta;
                     final double acos = math.acos(cosA(startPoint - centerPoint, endPoint - centerPoint, event.delta));
                     //final double direction;
