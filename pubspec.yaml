@@ -20,16 +20,16 @@ dependencies:
   awesome_flutter:
     path: ../awesome_flutter
   cupertino_icons: ^0.1.2
-  dio: ^3.0.9
-  extended_image: 1.6.0
+  dio: 4.0.0
+  extended_image: 4.1.0
   flushbar: ^1.10.2
   flutter:
     sdk: flutter
   html: ^0.15.0
   image_gallery_saver: ^1.2.2
   image_picker: ^0.6.3+4
-  provider: ^4.0.4
-  wechat_assets_picker: 4.2.2
+  provider: 6.0.0
+  wechat_assets_picker: 6.0.5
 
 dev_dependencies:
   flutter_test:

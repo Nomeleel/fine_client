@@ -17,15 +17,13 @@ class CreativeStitchingViewV0 extends StatefulWidget {
   const CreativeStitchingViewV0({Key key}) : super(key: key);
 
   @override
-  _CreativeStitchingViewV0State createState() =>
-      _CreativeStitchingViewV0State();
+  _CreativeStitchingViewV0State createState() => _CreativeStitchingViewV0State();
 }
 
 class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   final PageController _pageController = PageController();
   String _mainImagePath;
-  final GlobalKey<ExtendedImageEditorState> _mainImageEditKey =
-      GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> _mainImageEditKey = GlobalKey<ExtendedImageEditorState>();
   Rect _mainImageCropRect;
   List<String> _multipleImagePathList;
   StreamController<List<String>> _streamController;
@@ -72,11 +70,10 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
       child: _mainImagePath == null
           ? introductionView(
               actionLabel: '选择图片',
-              action: () async {
-                _mainImagePath =
-                    (await ImagePicker().getImage(source: ImageSource.gallery))
-                        .path;
-                setState(() {});
+              action: () {
+                setState(() async {
+                  _mainImagePath = (await ImagePicker.pickImage(source: ImageSource.gallery)).path;
+                });
               })
           : baseView(
               topBar(backAction: () {
@@ -84,8 +81,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                   _mainImagePath = null;
                 });
               }, beforeNextAction: () {
-                _mainImageCropRect =
-                    _mainImageEditKey.currentState.getCropRect();
+                _mainImageCropRect = _mainImageEditKey.currentState.getCropRect();
               }, afterNextAction: () {
                 pickAssets();
               }),
@@ -142,8 +138,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
       StreamBuilder<List<String>>(
           stream: _streamController.stream,
           initialData: _multipleImagePathList,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<String>> asyncSnapshot) {
+          builder: (BuildContext context, AsyncSnapshot<List<String>> asyncSnapshot) {
             if ((asyncSnapshot.connectionState == ConnectionState.active ||
                     asyncSnapshot.connectionState == ConnectionState.done) &&
                 asyncSnapshot.data != null) {
@@ -178,8 +173,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           nextAction: () async {
             if (_finalByteDataList != null) {
               for (final ByteData imageByteData in _finalByteDataList) {
-                await ImageGallerySaver.saveImage(
-                    imageByteData.buffer.asUint8List());
+                await ImageGallerySaver.saveImage(imageByteData.buffer.asUint8List());
                 print('Save complete.');
               }
             }
@@ -187,12 +181,10 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
       Center(
         child: StreamBuilder<List<ByteData>>(
             stream: _multipleImagePathList.isNotEmpty
-                ? Stream<List<ByteData>>.fromFuture(creativeStitchingByFilePath(
-                    _mainImagePath, _multipleImagePathList,
+                ? Stream<List<ByteData>>.fromFuture(creativeStitchingByFilePath(_mainImagePath, _multipleImagePathList,
                     mainImageCropRect: _mainImageCropRect))
                 : null,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<ByteData>> asyncSnapshot) {
+            builder: (BuildContext context, AsyncSnapshot<List<ByteData>> asyncSnapshot) {
               switch (asyncSnapshot.connectionState) {
                 case ConnectionState.done:
                   if (asyncSnapshot.data != null) {
@@ -221,8 +213,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ClipRRect(
-            child: Image.asset('assets/images/SaoSiMing.jpg',
-                height: 45, width: 45, fit: BoxFit.cover),
+            child: Image.asset('assets/images/SaoSiMing.jpg', height: 45, width: 45, fit: BoxFit.cover),
             borderRadius: BorderRadius.circular(6),
           ),
           const SizedBox(
@@ -326,10 +317,10 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
             );
           };
 
-          Navigator.of(context).push<dynamic>(
-            Platform.isAndroid
-                ? TransparentMaterialPageRoute<dynamic>(builder: builder)
-                : TransparentCupertinoPageRoute<dynamic>(builder: builder),
+          Navigator.maybeOf(context).push<dynamic>(
+            Platform.isAndroid 
+                ? MaterialPageRoute<dynamic>(builder: builder) 
+                : CupertinoPageRoute<dynamic>(builder: builder),
           );
         },
       ));
@@ -448,8 +439,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   }
 
   Widget heroWidget(Widget widget) {
-    final String uniqueTag =
-        DateTime.now().toString() + math.Random().nextInt(77).toString();
+    final String uniqueTag = DateTime.now().toString() + math.Random().nextInt(77).toString();
     return GestureDetector(
       child: Hero(
         tag: uniqueTag,
@@ -457,8 +447,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
       ),
       onTap: () {
         Navigator.of(context).push<dynamic>(PageRouteBuilder<dynamic>(
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Hero(
               tag: uniqueTag,
               child: Container(

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:awesome_flutter/creative/creative_stitching.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
@@ -179,10 +180,10 @@ class _PreviewPageState extends State<PreviewPage> {
             );
           };
 
-          Navigator.of(context).push<dynamic>(
-            Platform.isAndroid
-                ? TransparentMaterialPageRoute<dynamic>(builder: builder)
-                : TransparentCupertinoPageRoute<dynamic>(builder: builder),
+          Navigator.maybeOf(context).push<dynamic>(
+            Platform.isAndroid 
+                ? MaterialPageRoute<dynamic>(builder: builder) 
+                : CupertinoPageRoute<dynamic>(builder: builder),
           );
         },
       ));

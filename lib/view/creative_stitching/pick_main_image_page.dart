@@ -70,7 +70,7 @@ class _PickMainImagePageState extends State<PickMainImagePage> {
         ),
         onPressed: () async {
           _mainImagePath =
-              (await ImagePicker().getImage(source: ImageSource.gallery)).path;
+              (await ImagePicker.pickImage(source: ImageSource.gallery)).path;
           setState(() {});
         },
       ),

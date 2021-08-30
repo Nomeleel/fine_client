@@ -133,7 +133,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
   }
 
   Future<void> pickImage() async {
-    final File image = File((await ImagePicker().getImage(source: ImageSource.gallery)).path);
+    final File image = File((await ImagePicker.pickImage(source: ImageSource.gallery)).path);
 
     setState(() {
       _image = image;

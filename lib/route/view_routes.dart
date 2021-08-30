@@ -16,6 +16,4 @@ Map<String, WidgetBuilder> viewRoutes = <String, WidgetBuilder>{
   'sudoku_image_view': (BuildContext context) => const SudokuImageView(),
   'lyrics_view': (BuildContext context) => const LyricsView(),
   'body_mass_index_view': (BuildContext context) => const BodyMassIndexView(),
-  'github_trending_view': (BuildContext context) => const GithubTrendingView(),
-
 };
