@@ -1,13 +1,5 @@
 package com.example.fine_client
 
-import android.os.Bundle
-import io.flutter.app.FlutterActivity
-import io.flutter.plugins.GeneratedPluginRegistrant
+import io.flutter.embedding.android.FlutterActivity;
 
-class MainActivity: FlutterActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getWindow().setStatusBarColor(0)
-        GeneratedPluginRegistrant.registerWith(this)
-    }
-}
+class MainActivity: FlutterActivity() {}
