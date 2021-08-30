@@ -3,7 +3,6 @@
 /// Generated file. Do not edit.
 
 /// *****************************
-
 import 'package:flutter/widgets.dart';
 
 import 'view_export_list.dart';
@@ -16,4 +15,5 @@ Map<String, WidgetBuilder> viewRoutes = <String, WidgetBuilder>{
   'sudoku_image_view': (BuildContext context) => const SudokuImageView(),
   'lyrics_view': (BuildContext context) => const LyricsView(),
   'body_mass_index_view': (BuildContext context) => const BodyMassIndexView(),
+  'funny_punch_view': (BuildContext context) => const FunnyPunchView(),
 };
