@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:awesome_flutter/util/math_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,21 +12,32 @@ class SolitaireView extends StatefulWidget {
 }
 
 class _SolitaireViewState extends State<SolitaireView> with SingleTickerProviderStateMixin {
+  List<Offset> pointList = <Offset>[];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: CustomPaint(
-        size: Size.infinite,
-        painter: SolitairePainter(
-          AnimationController(
-            duration: const Duration(
-              hours: 2,
-              seconds: 18,
-            ),
-            vsync: this,
-          )..forward(),
-          List<Solitaire>.generate(10, (int i) => Solitaire(Offset(0, i * 0.01))),
+      backgroundColor: Colors.green,
+      body: Listener(
+        onPointerDown: (PointerDownEvent e) {
+          print(e);
+          pointList.add(e.position);
+        },
+        onPointerMove: (PointerMoveEvent e) {
+          pointList.add(e.position);
+        },
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: SolitairePainter(
+            AnimationController(
+              duration: const Duration(
+                hours: 2,
+                seconds: 18,
+              ),
+              vsync: this,
+            )..forward(),
+            pointList,
+          ),
         ),
       ),
     );
@@ -33,11 +45,12 @@ class _SolitaireViewState extends State<SolitaireView> with SingleTickerProvider
 }
 
 class SolitairePainter extends CustomPainter {
-  SolitairePainter(this.repaint, this.solitaireList) : super(repaint: repaint);
+  SolitairePainter(this.repaint, this.pointList) : super(repaint: repaint);
 
   final AnimationController repaint;
 
-  final List<Solitaire> solitaireList;
+  final List<Offset> pointList;
+  static List<Solitaire> solitaireList = <Solitaire>[];
 
   Size canvasSize;
   Offset get sourcePosition => Offset(canvasSize.width / 2, canvasSize.height);
@@ -45,11 +58,34 @@ class SolitairePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvasSize ??= size;
-    canvas.translate(0.0, size.height / 2.0);
+    canvas.translate(0.0, size.height);
 
+    solitaireList.addAll(
+      pointList.sublist(solitaireList.length).map(
+            (Offset e) => Solitaire(
+              Offset(e.dx, canvasSize.height - e.dy),
+            ),
+          ),
+    );
+
+    final int removeCount = solitaireList.length - 50;
+    if (removeCount > 0) {
+      pointList.removeRange(0, removeCount);
+      solitaireList.removeRange(0, removeCount);
+    }
+
+    // ignore: avoid_function_literals_in_foreach_calls
     solitaireList.forEach((Solitaire solitaire) {
-      solitaire.trajectory.trajectory.forEach((e) {
-        canvas.drawRect(e & const Size(10, 20), Paint()..color = Colors.pink);
+      // ignore: avoid_function_literals_in_foreach_calls
+      solitaire.trajectory.trajectory.forEach((Offset e) {
+        final Rect rect = (e - const Offset(0, 70.0)) & const Size(55, 80);
+        canvas.drawRect(rect, Paint()..color = solitaire.color);
+        canvas.drawRect(
+          rect,
+          Paint()
+            ..color = Colors.black
+            ..style = PaintingStyle.stroke,
+        );
       });
       solitaire.trajectory.update();
     });
@@ -60,30 +96,47 @@ class SolitairePainter extends CustomPainter {
 }
 
 class Solitaire {
-  Solitaire(Offset position) : trajectory = Trajectory(position);
+  Solitaire(Offset position)
+      : trajectory = Trajectory(position),
+        color = Color(randomInt(0, 0xFFFFFFFF));
   final Trajectory trajectory;
+  final Color color;
 }
 
 class Trajectory {
-  Trajectory(Offset position) : trajectory = <Offset>[position];
+  Trajectory(Offset position)
+      : trajectory = <Offset>[position],
+        startProgress = random(0.3, 0.5),
+        ratio = random(0.5, 0.7),
+        direction = math.pow(-1, randomInt(0, 7));
 
   final List<Offset> trajectory;
+  final double startProgress;
+  // x / y
+  final double ratio;
+  final num direction;
 
-  Offset offset = const Offset(100.0, 200.0);
+  // end min point
+  Offset offset;
 
   void update() {
+    if (offset == null) {
+      final double dy = trajectory.first.dy / math.sin(startProgress * math.pi);
+      offset = Offset(trajectory.first.dx + dy * (1.0 - startProgress) * ratio * direction, dy);
+    }
+
     if (offset.dy <= 1.0) {
       return;
     }
 
-    final double x = trajectory.last.dx + 2.0;
-    final double progress = (offset.dx - x) / offset.dy;
+    final double x = trajectory.last.dx + 3.0 * direction;
+    final double progress = (offset.dx - x) / (offset.dy * ratio) * direction;
     final Offset point = Offset(x, -offset.dy * math.sin(progress * math.pi));
     if (progress > 0.0) {
       trajectory.add(point);
     } else {
       final double dy = offset.dy * 0.7;
-      offset = Offset(x + dy, dy);
+      offset = Offset(x + dy * ratio * direction, dy);
     }
   }
 }
