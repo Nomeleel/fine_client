@@ -12,14 +12,14 @@ import 'base_page.dart';
 import 'creative_stitching_view.dart';
 
 class PreviewPage extends StatefulWidget {
-  const PreviewPage({Key key}) : super(key: key);
+  const PreviewPage({Key? key}) : super(key: key);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
 
 class _PreviewPageState extends State<PreviewPage> {
-  List<ByteData> _finalByteDataList;
+  List<ByteData>? _finalByteDataList;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _PreviewPageState extends State<PreviewPage> {
         nextActionLabel: '导出',
         nextAction: () async {
           if (_finalByteDataList != null) {
-            await Future.forEach(_finalByteDataList, (ByteData imageByteData) async {
+            await Future.forEach(_finalByteDataList!, (ByteData imageByteData) async {
               await ImageGallerySaver.saveImage(imageByteData.buffer.asUint8List());
             });
 
@@ -64,8 +64,8 @@ class _PreviewPageState extends State<PreviewPage> {
   }
 
   Future<List<ByteData>> creativeStitching() async {
-    final CreativeStitching cs = CreativeStitching.of(context);
-    return await creativeStitchingByFilePath(cs.mainImagePath, cs.multipleImagePathList,
+    final CreativeStitching? cs = CreativeStitching.of(context);
+    return await creativeStitchingByFilePath(cs!.mainImagePath!, cs.multipleImagePathList!,
         mainImageCropRect: cs.mainImageCropRect);
   }
 
@@ -149,7 +149,7 @@ class _PreviewPageState extends State<PreviewPage> {
   Widget imageGridView() {
     final List<Widget> imageList = <Widget>[];
     final double height = MediaQuery.of(context).size.height;
-    final List<Widget> detailViewList = _finalByteDataList
+    final List<Widget> detailViewList = _finalByteDataList!
         .map<Widget>(
           (ByteData byteData) => ExtendedImageSlidePage(
             child: ExtendedImage.memory(
@@ -163,10 +163,10 @@ class _PreviewPageState extends State<PreviewPage> {
         )
         .toList();
 
-    for (int i = 0; i < _finalByteDataList.length; i++) {
+    for (int i = 0; i < _finalByteDataList!.length; i++) {
       imageList.add(GestureDetector(
         child: Image.memory(
-          _finalByteDataList[i].buffer.asUint8List(),
+          _finalByteDataList![i].buffer.asUint8List(),
           fit: BoxFit.cover,
         ),
         onTap: () {
@@ -180,7 +180,7 @@ class _PreviewPageState extends State<PreviewPage> {
             );
           };
 
-          Navigator.maybeOf(context).push<dynamic>(
+          Navigator.maybeOf(context)?.push<dynamic>(
             Platform.isAndroid 
                 ? MaterialPageRoute<dynamic>(builder: builder) 
                 : CupertinoPageRoute<dynamic>(builder: builder),
@@ -190,7 +190,7 @@ class _PreviewPageState extends State<PreviewPage> {
     }
 
     return AspectRatio(
-      aspectRatio: 3 / (_finalByteDataList.length / 3).ceil(),
+      aspectRatio: 3 / (_finalByteDataList!.length / 3).ceil(),
       child: GridView.count(
         padding: EdgeInsets.zero,
         crossAxisCount: 3,

@@ -13,8 +13,10 @@ import 'package:provider/provider.dart';
 
 import '../provider/lyrics_provider.dart';
 
+// TODO(Nomeleel): 颜色面板UI问题
+// TODO(Nomeleel): 返回时退出横屏
 class LyricsView extends StatefulWidget {
-  const LyricsView({Key key}) : super(key: key);
+  const LyricsView({Key? key}) : super(key: key);
 
   @override
   _LyricsViewState createState() => _LyricsViewState();
@@ -23,7 +25,7 @@ class LyricsView extends StatefulWidget {
 class _LyricsViewState extends State<LyricsView> {
   final LyricsProvider _provider = LyricsProvider();
   final FixedExtentScrollController _controller = FixedExtentScrollController();
-  Timer _mainTimer;
+  late Timer _mainTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _LyricsViewState extends State<LyricsView> {
             value: _provider..init(),
             child: Selector<LyricsProvider, List<LyricItemWidget>>(
               selector: (BuildContext context, LyricsProvider provider) => provider.lyricItemWidgetList,
-              builder: (BuildContext context, List<LyricItemWidget> list, Widget child) {
+              builder: (BuildContext context, List<LyricItemWidget>? list, Widget? child) {
                 return list == null
                     ? activityIndicator()
                     : () {
@@ -55,7 +57,7 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   // build ui
-  Widget scaffold({Widget child, Widget control}) {
+  Widget scaffold({required Widget child, required Widget control}) {
     return Container(
       color: Colors.white,
       child: Stack(
@@ -97,7 +99,7 @@ class _LyricsViewState extends State<LyricsView> {
           _provider.lyricItemWidgetList.length,
           (int index) => Selector<LyricsProvider, LyricItemWidget>(
                 selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
-                builder: (BuildContext context, LyricItemWidget widget, Widget child) {
+                builder: (BuildContext context, LyricItemWidget widget, Widget? child) {
                   print('${DateTime.now()} build: $index');
                   return Container(
                     alignment: Alignment.center,
@@ -181,7 +183,7 @@ class _LyricsViewState extends State<LyricsView> {
               ),
               ColorPicker(
                 color: _provider.fontColor,
-                onColorChanged: (Color color) {
+                onColorChanged: (Color? color) {
                   _provider.setDecoration(fontColor: color);
                 },
               ),
@@ -214,7 +216,7 @@ class _LyricsViewState extends State<LyricsView> {
   }
 
   void start() {
-    if (_mainTimer == null || !_mainTimer.isActive) {
+    if (!_mainTimer.isActive) {
       nextTimer();
     }
   }

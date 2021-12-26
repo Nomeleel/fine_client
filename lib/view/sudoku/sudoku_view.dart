@@ -4,21 +4,14 @@ import 'sudoku_image_view.dart';
 import 'sudoku_manual_view.dart';
 
 class SudokuView extends StatefulWidget {
-  const SudokuView({Key key}) : super(key: key);
+  const SudokuView({Key? key}) : super(key: key);
 
   @override
   SudokuViewState createState() => SudokuViewState();
 }
 
 class SudokuViewState extends State<SudokuView> {
-  PageController _pageController;
-
-  @override
-  void initState() {
-    _pageController = PageController();
-
-    super.initState();
-  }
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {

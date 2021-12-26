@@ -1,9 +1,8 @@
 import 'package:awesome_flutter/custom/painter/fireworks_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HappyBirthdayToMeView extends StatefulWidget {
-  const HappyBirthdayToMeView({Key key}) : super(key: key);
+  const HappyBirthdayToMeView({Key? key}) : super(key: key);
 
   @override
   _HappyBirthdayToMeViewState createState() => _HappyBirthdayToMeViewState();

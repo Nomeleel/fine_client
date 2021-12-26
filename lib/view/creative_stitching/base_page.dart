@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BasePage extends StatelessWidget {
-  const BasePage({Key key, this.topBar, this.body}) : super(key: key);
+  const BasePage({Key? key, required this.topBar, required this.body}) : super(key: key);
 
   final Widget topBar;
 
@@ -26,18 +26,18 @@ class BasePage extends StatelessWidget {
 }
 
 class TopBar extends StatelessWidget {
-  const TopBar(
-      {Key key,
-      this.backAction,
-      this.title,
-      this.nextActionLabel = '下一步',
-      this.nextAction})
-      : super(key: key);
+  const TopBar({
+    Key? key,
+    this.backAction,
+    this.title,
+    this.nextActionLabel = '下一步',
+    this.nextAction,
+  }) : super(key: key);
 
-  final VoidCallback backAction;
-  final String title;
-  final String nextActionLabel;
-  final VoidCallback nextAction;
+  final VoidCallback? backAction;
+  final String? title;
+  final String? nextActionLabel;
+  final VoidCallback? nextAction;
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +63,10 @@ class TopBar extends StatelessWidget {
                   if (Navigator.of(context).canPop()) {
                     Navigator.of(context).pop();
                   } else {
-                    context
-                        .findRootAncestorStateOfType<NavigatorState>()
-                        ?.pop();
+                    context.findRootAncestorStateOfType<NavigatorState>()?.pop();
                   }
                 } else {
-                  backAction();
+                  backAction!();
                 }
               },
             ),
@@ -87,7 +85,7 @@ class TopBar extends StatelessWidget {
             height: 30,
             child: CupertinoButton(
               child: Text(
-                nextActionLabel,
+                nextActionLabel ?? '',
                 style: const TextStyle(
                   fontSize: 14.0,
                 ),

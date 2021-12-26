@@ -1,23 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FunnyPunchView extends StatefulWidget {
-  const FunnyPunchView({Key key}) : super(key: key);
+  const FunnyPunchView({Key? key}) : super(key: key);
 
   @override
   _FunnyPunchViewState createState() => _FunnyPunchViewState();
 }
 
 class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProviderStateMixin {
-  AnimationController controller;
-
-  @override
-  void initState() {
-    controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
-    super.initState();
-  }
+  late AnimationController controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +23,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
             children: <Widget>[
               AnimatedBuilder(
                 animation: controller,
-                builder: (BuildContext context, Widget child) {
+                builder: (BuildContext context, Widget? child) {
                   return Align(
                     alignment: Alignment(-cos(controller.value * 2.0 * pi), cos(controller.value * 4.0 * pi)),
                     child: child,
@@ -58,7 +51,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
     final Alignment align = Alignment(-flag.toDouble(), 1.0);
     return AnimatedBuilder(
       animation: animation,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         final double value = sin(animation.value * pi);
         return Transform(
           alignment: align,

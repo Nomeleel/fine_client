@@ -8,27 +8,19 @@ import '../../helper/flushbar_helper.dart';
 import '../../provider/sudoku_manual_provider.dart';
 
 class SudokuManualView extends StatefulWidget {
-  const SudokuManualView({Key key}) : super(key: key);
+  const SudokuManualView({Key? key}) : super(key: key);
 
   @override
   SudokuManualViewState createState() => SudokuManualViewState();
 }
 
 class SudokuManualViewState extends State<SudokuManualView> {
-  Dio _dio;
-  SudokuManualProvider _provider;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _dio = Dio();
-  }
+  final Dio _dio = Dio();
+  late SudokuManualProvider _provider;
 
   @override
   Widget build(BuildContext context) {
-    _provider = SudokuManualProvider(
-        fillSudokuStr: ModalRoute.of(context)?.settings?.arguments?.toString());
+    _provider = SudokuManualProvider(fillSudokuStr: ModalRoute.of(context)?.settings.arguments?.toString());
 
     return Container(
       color: Colors.white,
@@ -47,26 +39,18 @@ class SudokuManualViewState extends State<SudokuManualView> {
                 child: ChangeNotifierProvider<SudokuManualProvider>.value(
                   value: _provider,
                   child: Selector<SudokuManualProvider, List<SudokuCell>>(
-                    selector:
-                        (BuildContext context, SudokuManualProvider provider) =>
-                            provider.sudokuCellList,
-                    builder: (BuildContext context, List<SudokuCell> value,
-                        Widget child) {
+                    selector: (BuildContext context, SudokuManualProvider provider) => provider.sudokuCellList,
+                    builder: (BuildContext context, List<SudokuCell> value, Widget? child) {
                       return GridView.count(
                         crossAxisCount: 9,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
-                        children: List<
-                                Selector<SudokuManualProvider,
-                                    SudokuCell>>.generate(
+                        children: List<Selector<SudokuManualProvider, SudokuCell>>.generate(
                             _provider.sudokuCellList.length, (int index) {
                           return Selector<SudokuManualProvider, SudokuCell>(
-                            selector: (BuildContext context,
-                                    SudokuManualProvider provider) =>
+                            selector: (BuildContext context, SudokuManualProvider provider) =>
                                 provider.sudokuCellList[index],
-                            builder: (BuildContext context, SudokuCell value,
-                                    Widget child) =>
-                                sudoKuCell(value),
+                            builder: (BuildContext context, SudokuCell value, Widget? child) => sudoKuCell(value),
                           );
                         }),
                       );
@@ -78,8 +62,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children:
-                List<Widget>.generate(10, (int index) => digitButton(index)),
+            children: List<Widget>.generate(10, (int index) => digitButton(index)),
           ),
           Expanded(
             child: CupertinoButton(
@@ -138,9 +121,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
   Widget sudoKuCell(SudokuCell cell) {
     return GestureDetector(
       child: Container(
-        color: cell.isSelected
-            ? Colors.purple.withOpacity(0.5)
-            : Colors.transparent,
+        color: cell.isSelected ? Colors.purple.withOpacity(0.5) : Colors.transparent,
         child: cell.digit == 0
             ? null
             : Center(
@@ -159,15 +140,22 @@ class SudokuManualViewState extends State<SudokuManualView> {
     );
   }
 
-  void uploadSudokuStr() {
+  Future<void> uploadSudokuStr() async {
+    // final resp = await _dio.post<Response<dynamic>>('http://127.0.0.1:8160/sudoku',
+    //     data: {
+    //         'sudokuStr': _provider.sudokuStr,
+    //       },
+    //     );
+    // print(resp);
+    print(_provider.sudokuStr);
     _dio
-        .post<Response<dynamic>>(
-      'http://192.168.1.9:8160/sudoku',
+        .post<dynamic>(
+      'http://127.0.0.1:8160/sudoku',
       data: FormData.fromMap(<String, String>{
         'sudokuStr': _provider.sudokuStr,
       }),
     )
-        .then((Response<dynamic> response) {
+        .then((dynamic response) {
       if (response.statusCode == 200) {
         FlushBarHelper.showSuccess(
           context: context,
@@ -180,6 +168,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
         );
       }
     }).catchError((dynamic e) {
+      print(e);
       FlushBarHelper.showError(
         context: context,
         message: '网络异常！',

@@ -9,10 +9,10 @@ class LyricsProvider with ChangeNotifier{
   
   int _currentIndex = 0;
 
-  List<LyricItem> _lyricItemList;
+  late List<LyricItem> _lyricItemList;
   List<LyricItem> get lyricItemList => _lyricItemList;
 
-  List<LyricItemWidget> _lyricItemWidgetList;
+  late List<LyricItemWidget> _lyricItemWidgetList;
   List<LyricItemWidget> get lyricItemWidgetList => _lyricItemWidgetList;
 
   Color _fontColor = const Color(0xffffffff);
@@ -63,7 +63,7 @@ class LyricsProvider with ChangeNotifier{
 
   bool isLast() => _currentIndex >= _lyricItemWidgetList.length - 1;
 
-  void setDecoration({Color fontColor, double fontSize}) {
+  void setDecoration({Color? fontColor, double? fontSize}) {
     if (fontColor == null && fontSize == null) {
       return;
     }
@@ -86,11 +86,11 @@ class LyricsProvider with ChangeNotifier{
     regExp.allMatches(lyricStr).forEach((RegExpMatch element) { 
       lyric.lyricItemList.add(LyricItem(
         duration: Duration(
-          minutes: int.parse(element.namedGroup('min')),
-          seconds: int.parse(element.namedGroup('sec')),
-          milliseconds: int.parse(element.namedGroup('mil')) * 10,
+          minutes: int.parse(element.namedGroup('min')!),
+          seconds: int.parse(element.namedGroup('sec')!),
+          milliseconds: int.parse(element.namedGroup('mil')!) * 10,
         ),
-        text: element.namedGroup('text'),
+        text: element.namedGroup('text')!,
       ));
     });
 

@@ -2,20 +2,20 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:awesome_flutter/custom/animation/gesture_scale_transition.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/goldfinger_race_provider.dart';
 
+// TODO(Nomeleel): 新出的数字先变大更好 不然点击太快 初始太小 看不清楚
 class GoldfingerRaceView extends StatelessWidget {
-  const GoldfingerRaceView({Key key}) : super(key: key);
+  const GoldfingerRaceView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     print('build');
-    Socket socket;
+    // ignore: close_sinks
+    late Socket? socket;
     int count = 0;
     return ChangeNotifierProvider<GoldfingerRaceProvider>(
       create: (BuildContext context) => GoldfingerRaceProvider(),
@@ -37,7 +37,7 @@ class GoldfingerRaceView extends StatelessWidget {
                   color: Colors.purple.withOpacity(0.7),
                   child: Selector<GoldfingerRaceProvider, bool>(
                     selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.isStart,
-                    builder: (BuildContext context, bool isStart, Widget child) {
+                    builder: (BuildContext context, bool isStart, Widget? child) {
                       return AnimatedContainer(
                         duration: isStart
                             ? Provider.of<GoldfingerRaceProvider>(context, listen: false).duration
@@ -54,7 +54,7 @@ class GoldfingerRaceView extends StatelessWidget {
               ),
               Expanded(
                 child: Consumer<GoldfingerRaceProvider>(
-                  builder: (BuildContext context, GoldfingerRaceProvider provider, Widget child) {
+                  builder: (BuildContext context, GoldfingerRaceProvider provider, Widget? child) {
                     return AnimatedSwitcher(
                       duration: const Duration(seconds: 2),
                       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -82,7 +82,7 @@ class GoldfingerRaceView extends StatelessWidget {
               ),
               Selector<GoldfingerRaceProvider, VoidCallback>(
                 selector: (BuildContext context, GoldfingerRaceProvider provider) => provider.onClick,
-                builder: (BuildContext context, VoidCallback onClick, Widget child) {
+                builder: (BuildContext context, VoidCallback onClick, Widget? child) {
                   return GestureScaleTransition(
                     callBack: onClick,
                     minScale: 0.5,
@@ -101,13 +101,14 @@ class GoldfingerRaceView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   socket ??= await Socket.connect('192.168.1.8', 12345);
-                  socket.writeln('${count++}');
-                  await socket.flush();
+                  socket?.writeln('${count++}');
+                  await socket?.flush();
                 },
                 child: const Text('Go'),
               ),
               ElevatedButton(
                 onPressed: () async {
+                  // ignore: close_sinks
                   final Socket socket = await Socket.connect('192.168.1.8', 12345);
                   socket.writeln('${count++}');
                   await socket.flush();

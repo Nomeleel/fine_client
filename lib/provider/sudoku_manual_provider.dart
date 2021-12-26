@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class SudokuManualProvider with ChangeNotifier {
-  SudokuManualProvider({String fillSudokuStr}) {
+  SudokuManualProvider({String? fillSudokuStr}) {
     final bool isFillStr = fillSudokuStr != null && fillSudokuStr.length == 81;
     _sudokuCellList = List<SudokuCell>.generate(
         81,
@@ -9,7 +9,7 @@ class SudokuManualProvider with ChangeNotifier {
             index, isFillStr ? int.parse(fillSudokuStr[index]) : 0, false));
   }
 
-  List<SudokuCell> _sudokuCellList;
+  late List<SudokuCell> _sudokuCellList;
   List<SudokuCell> get sudokuCellList => _sudokuCellList;
 
   int _selectedIndex = -1;
@@ -45,7 +45,7 @@ class SudokuManualProvider with ChangeNotifier {
     }
   }
 
-  void retSetSudokuCell(int index, {int digit, bool isSelected}) {
+  void retSetSudokuCell(int index, {int? digit, bool? isSelected}) {
     _sudokuCellList[index] = SudokuCell(
         index,
         digit ?? _sudokuCellList[index].digit,

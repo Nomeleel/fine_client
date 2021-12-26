@@ -8,22 +8,17 @@ import 'package:flutter/material.dart';
 import '../../helper/flushbar_helper.dart';
 
 class SudokuImageView extends StatefulWidget {
-  const SudokuImageView({Key key}) : super(key: key);
+  const SudokuImageView({Key? key}) : super(key: key);
 
   @override
   SudokuImageViewState createState() => SudokuImageViewState();
 }
 
 class SudokuImageViewState extends State<SudokuImageView> {
-  File _image;
-  Dio _dio;
+  File? _image;
+  final Dio _dio = Dio();
 
-  @override
-  void initState() {
-    _dio = Dio();
-
-    super.initState();
-  }
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +55,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                 height: 50,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: _image == null
-                      ? CupertinoColors.quaternarySystemFill
-                      : Colors.blueAccent,
+                  color: _image == null ? CupertinoColors.quaternarySystemFill : Colors.blueAccent,
                   borderRadius: BorderRadius.circular(25.0),
                 ),
                 child: const Text(
@@ -105,7 +98,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
         : Stack(
             children: <Widget>[
               Image.file(
-                _image,
+                _image!,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
@@ -119,7 +112,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
                       height: 45,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
-                        borderRadius:BorderRadius.circular(25.0),
+                        borderRadius: BorderRadius.circular(25.0),
                       ),
                       child: const Icon(
                         Icons.clear,
@@ -133,7 +126,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
   }
 
   Future<void> pickImage() async {
-    final File image = File((await ImagePicker.pickImage(source: ImageSource.gallery)).path);
+    final File image = File((await _imagePicker.pickImage(source: ImageSource.gallery))!.path);
 
     setState(() {
       _image = image;
@@ -156,7 +149,7 @@ class SudokuImageViewState extends State<SudokuImageView> {
       'http://192.168.1.9:8160/sudoku',
       data: FormData.fromMap(<String, dynamic>{
         'image': await MultipartFile.fromFile(
-          _image.path,
+          _image!.path,
         ),
       }),
     )

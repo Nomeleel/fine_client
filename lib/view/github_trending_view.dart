@@ -1,26 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 
 class GithubTrendingView extends StatefulWidget {
-  const GithubTrendingView({Key key}) : super(key: key);
+  const GithubTrendingView({Key? key}) : super(key: key);
 
   @override
   _GithubTrendingViewState createState() => _GithubTrendingViewState();
 }
 
 class _GithubTrendingViewState extends State<GithubTrendingView> {
-  Dio _dio;
-  List<TrendingItem> _trendingList;
-
-  @override
-  void initState() {
-    super.initState();
-    _dio = Dio();
-    _trendingList = <TrendingItem>[];
-  }
+  final Dio _dio = Dio();
+  late List<TrendingItem> _trendingList = <TrendingItem>[];
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +42,7 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
                   height: 50.0,
                   color: Color(item.languageHexColor ?? 0xffffffff),
                   alignment: Alignment.centerLeft,
-                  child: Text(item.repository),
+                  child: Text(item.repository ?? ''),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -83,7 +75,7 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
   void parseArticle(dom.Element article) {
     final TrendingItem trendingItem = TrendingItem();
     // Repo
-    trendingItem.repository = article.getElementsByTagName('a')[1].attributes['href'].substring(1);
+    trendingItem.repository = article.getElementsByTagName('a')[1].attributes['href']?.substring(1);
     // Description
     final List<dom.Element> description = article.getElementsByTagName('p');
     if (description.isNotEmpty) {
@@ -92,8 +84,8 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
     // Language
     final List<dom.Element> lang = article.getElementsByClassName('repo-language-color');
     if (lang.isNotEmpty) {
-      trendingItem.languageHexColor = int.parse(lang[0].attributes['style'].split(' ')[1].replaceFirst('#', '0xff'));
-      trendingItem.language = lang[0].nextElementSibling.text.trim();
+      trendingItem.languageHexColor = int.parse(lang[0].attributes['style']!.split(' ')[1].replaceFirst('#', '0xff'));
+      trendingItem.language = lang[0].nextElementSibling?.text.trim();
     }
     // Start & Fork
     final List<dom.Element> startFork = article.getElementsByClassName('muted-link d-inline-block mr-3');
@@ -118,13 +110,13 @@ class TrendingItem {
     this.trending,
   });
 
-  String repository;
-  String description;
-  int languageHexColor;
-  String language;
-  String startStr;
-  String forkStr;
-  String trending;
+  String? repository;
+  String? description;
+  int? languageHexColor;
+  String? language;
+  String? startStr;
+  String? forkStr;
+  String? trending;
 
   @override
   String toString() {

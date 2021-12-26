@@ -1,8 +1,8 @@
 import 'package:awesome_flutter/template/app_store_card_description.dart';
 import 'package:awesome_flutter/widget/app_store_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'route/view_routes.dart';
+
+import '../route/view_routes.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override

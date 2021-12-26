@@ -8,13 +8,12 @@ import 'package:awesome_flutter/creative/creative_stitching.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class CreativeStitchingViewV0 extends StatefulWidget {
-  const CreativeStitchingViewV0({Key key}) : super(key: key);
+  const CreativeStitchingViewV0({Key? key}) : super(key: key);
 
   @override
   _CreativeStitchingViewV0State createState() => _CreativeStitchingViewV0State();
@@ -22,12 +21,13 @@ class CreativeStitchingViewV0 extends StatefulWidget {
 
 class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   final PageController _pageController = PageController();
-  String _mainImagePath;
+  late String? _mainImagePath;
   final GlobalKey<ExtendedImageEditorState> _mainImageEditKey = GlobalKey<ExtendedImageEditorState>();
-  Rect _mainImageCropRect;
-  List<String> _multipleImagePathList;
-  StreamController<List<String>> _streamController;
-  List<ByteData> _finalByteDataList;
+  late Rect? _mainImageCropRect;
+  late List<String> _multipleImagePathList;
+  late StreamController<List<String>> _streamController;
+  late List<ByteData>? _finalByteDataList;
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
               actionLabel: '选择图片',
               action: () {
                 setState(() async {
-                  _mainImagePath = (await ImagePicker.pickImage(source: ImageSource.gallery)).path;
+                  _mainImagePath = (await _imagePicker.pickImage(source: ImageSource.gallery))?.path;
                 });
               })
           : baseView(
@@ -81,16 +81,16 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                   _mainImagePath = null;
                 });
               }, beforeNextAction: () {
-                _mainImageCropRect = _mainImageEditKey.currentState.getCropRect();
+                _mainImageCropRect = _mainImageEditKey.currentState!.getCropRect();
               }, afterNextAction: () {
                 pickAssets();
               }),
               ExtendedImage.file(
-                File(_mainImagePath),
+                File(_mainImagePath!),
                 fit: BoxFit.contain,
                 mode: ExtendedImageMode.editor,
                 extendedImageEditorKey: _mainImageEditKey,
-                initEditorConfigHandler: (ExtendedImageState state) {
+                initEditorConfigHandler: (ExtendedImageState? state) {
                   return EditorConfig(
                       maxScale: 8.0,
                       cropRectPadding: const EdgeInsets.all(0.0),
@@ -103,8 +103,8 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   }
 
   Widget introductionView({
-    String actionLabel,
-    VoidCallback action,
+    required String actionLabel,
+    required VoidCallback action,
   }) {
     return Center(
       child: CupertinoButton(
@@ -147,7 +147,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                 crossAxisCount: 3,
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
-                children: asyncSnapshot.data
+                children: asyncSnapshot.data!
                     .map<Widget>((String filePath) => Image.file(
                           File(filePath),
                           fit: BoxFit.cover,
@@ -172,7 +172,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           nextActionLabel: '导出',
           nextAction: () async {
             if (_finalByteDataList != null) {
-              for (final ByteData imageByteData in _finalByteDataList) {
+              for (final ByteData imageByteData in _finalByteDataList!) {
                 await ImageGallerySaver.saveImage(imageByteData.buffer.asUint8List());
                 print('Save complete.');
               }
@@ -181,7 +181,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
       Center(
         child: StreamBuilder<List<ByteData>>(
             stream: _multipleImagePathList.isNotEmpty
-                ? Stream<List<ByteData>>.fromFuture(creativeStitchingByFilePath(_mainImagePath, _multipleImagePathList,
+                ? Stream<List<ByteData>>.fromFuture(creativeStitchingByFilePath(_mainImagePath!, _multipleImagePathList,
                     mainImageCropRect: _mainImageCropRect))
                 : null,
             builder: (BuildContext context, AsyncSnapshot<List<ByteData>> asyncSnapshot) {
@@ -195,7 +195,6 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
                       child: Text('Please retry!'),
                     );
                   }
-                  break;
                 default:
                   return const CircularProgressIndicator(
                     backgroundColor: Colors.transparent,
@@ -286,7 +285,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   Widget imageGridView() {
     final List<Widget> imageList = <Widget>[];
     final double height = MediaQuery.of(context).size.height;
-    final List<Widget> detailViewList = _finalByteDataList
+    final List<Widget> detailViewList = _finalByteDataList!
         .map<Widget>(
           (ByteData byteData) => ExtendedImageSlidePage(
             child: ExtendedImage.memory(
@@ -300,10 +299,10 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
         )
         .toList();
 
-    for (int i = 0; i < _finalByteDataList.length; i++) {
+    for (int i = 0; i < _finalByteDataList!.length; i++) {
       imageList.add(GestureDetector(
         child: Image.memory(
-          _finalByteDataList[i].buffer.asUint8List(),
+          _finalByteDataList![i].buffer.asUint8List(),
           fit: BoxFit.cover,
         ),
         onTap: () {
@@ -317,7 +316,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
             );
           };
 
-          Navigator.maybeOf(context).push<dynamic>(
+          Navigator.maybeOf(context)?.push<dynamic>(
             Platform.isAndroid 
                 ? MaterialPageRoute<dynamic>(builder: builder) 
                 : CupertinoPageRoute<dynamic>(builder: builder),
@@ -327,7 +326,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
     }
 
     return AspectRatio(
-      aspectRatio: 3 / (_finalByteDataList.length / 3).ceil(),
+      aspectRatio: 3 / (_finalByteDataList!.length / 3).ceil(),
       child: GridView.count(
         padding: EdgeInsets.zero,
         crossAxisCount: 3,
@@ -339,12 +338,12 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   }
 
   Widget topBar({
-    Function backAction,
-    String description,
+    Function? backAction,
+    String? description,
     String nextActionLabel = '下一步',
-    Function beforeNextAction,
-    Function nextAction,
-    Function afterNextAction,
+    Function? beforeNextAction,
+    Function? nextAction,
+    Function? afterNextAction,
   }) {
     return Container(
       color: const Color(0xFF232323),
@@ -423,15 +422,15 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   }
 
   Future<void> pickAssets() async {
-    final List<AssetEntity> multipleImageList = await AssetPicker.pickAssets(
+    final List<AssetEntity>? multipleImageList = await AssetPicker.pickAssets(
       context,
       maxAssets: 18,
     );
 
-    if (multipleImageList != null && multipleImageList.isNotEmpty) {
+    if (multipleImageList?.isNotEmpty ?? false) {
       _multipleImagePathList.clear();
-      await Future.wait(multipleImageList?.map((AssetEntity assetEntity) async {
-        _multipleImagePathList.add((await assetEntity.file).path);
+      await Future.wait(multipleImageList!.map((AssetEntity assetEntity) async {
+        _multipleImagePathList.add((await assetEntity.file)!.path);
       }));
       _streamController.add(_multipleImagePathList);
       multipleImageList.clear();

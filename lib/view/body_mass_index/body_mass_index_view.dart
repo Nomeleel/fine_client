@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'body_mass_index_painter.dart';
 
 class BodyMassIndexView extends StatefulWidget {
-  const BodyMassIndexView({Key key}) : super(key: key);
+  const BodyMassIndexView({Key? key}) : super(key: key);
 
   @override
   _BodyMassIndexViewState createState() => _BodyMassIndexViewState();

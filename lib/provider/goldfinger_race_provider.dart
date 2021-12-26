@@ -7,17 +7,17 @@ class GoldfingerRaceProvider with ChangeNotifier {
     _init();
   }
 
-  int _clickedCount;
+  late int _clickedCount;
   int get clickedCount => _clickedCount;
 
-  CurrentState _state;
+  late CurrentState _state;
 
   bool get isStart => _state != CurrentState.none;
 
-  Duration _duration;
+  late Duration _duration;
   Duration get duration => _duration;
 
-  VoidCallback _onClick;
+  late VoidCallback _onClick;
   VoidCallback get onClick => _onClick;
 
   void _init() {

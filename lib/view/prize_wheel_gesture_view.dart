@@ -2,12 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:flutter/widgets.dart';
 
 import 'body_mass_index/body_mass_index_painter.dart';
 
 class PrizeWheelView extends StatefulWidget {
-  const PrizeWheelView({Key key}) : super(key: key);
+  const PrizeWheelView({Key? key}) : super(key: key);
 
   @override
   _PrizeWheelViewState createState() => _PrizeWheelViewState();
@@ -18,21 +17,18 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with TickerProviderStat
   Offset centerPoint = Offset.zero;
   double speed = .0;
 
-  ValueNotifier<double> turnsValue;
-  AnimationController controller;
+  final ValueNotifier<double> turnsValue = ValueNotifier<double>(.0);
+  late AnimationController controller = AnimationController(vsync: this)
+    ..removeListener(_listener)
+    ..addListener(_listener);
+
+  void _listener() => turnsValue.value += controller.value;
 
   @override
   void initState() {
     super.initState();
 
-    turnsValue = ValueNotifier<double>(.0);
-
-    controller = AnimationController(vsync: this)
-      ..addListener(() {
-        turnsValue.value += controller.value;
-      });
-
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((Duration timeStamp) {
       paintWidth = MediaQuery.of(context).size.width - 10.0;
       centerPoint = Offset(paintWidth / 2, paintWidth / 2);
       setState(() {});
@@ -79,7 +75,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with TickerProviderStat
                   },
                   child: AnimatedBuilder(
                     animation: turnsValue,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       // RotatedBox ?
                       final Matrix4 transform = Matrix4.rotationZ(turnsValue.value);
                       return Transform(

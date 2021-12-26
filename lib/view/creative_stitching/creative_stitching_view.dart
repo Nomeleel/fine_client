@@ -1,8 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'pick_main_image_page.dart';
 import 'pick_multiple_image_page.dart';
@@ -10,23 +6,24 @@ import 'preview_page.dart';
 
 // ignore: must_be_immutable
 class CreativeStitching extends InheritedWidget {
-  CreativeStitching({Key key, Widget child}) : super(key: key, child: child);
+  CreativeStitching({Key? key, required Widget child}) : super(key: key, child: child);
 
-  String mainImagePath;
-  Rect mainImageCropRect;
+  String? mainImagePath;
+  Rect? mainImageCropRect;
 
-  List<String> multipleImagePathList;
+  List<String>? multipleImagePathList;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 
-  static CreativeStitching of(BuildContext context) {
+  static CreativeStitching? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<CreativeStitching>();
   }
 }
 
+// TODO(Nomeleel): 下一步 之前 check
 class CreativeStitchingView extends StatelessWidget {
-  const CreativeStitchingView({Key key}) : super(key: key);
+  const CreativeStitchingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

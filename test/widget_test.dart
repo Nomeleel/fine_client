@@ -40,7 +40,7 @@ void main() {
     //print(regExp.stringMatch(lyricStr));
 
     regExp.allMatches(lyricStr).forEach((RegExpMatch element) {
-      print(int.parse(element.namedGroup('min')));
+      print(int.parse(element.namedGroup('min')!));
     });
 
  

@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'body_mass_index/body_mass_index_painter.dart';
 
 class PrizeWheelScrollDriveView extends StatefulWidget {
-  const PrizeWheelScrollDriveView({Key key}) : super(key: key);
+  const PrizeWheelScrollDriveView({Key? key}) : super(key: key);
 
   @override
   _PrizeWheelScrollDriveViewState createState() => _PrizeWheelScrollDriveViewState();
 }
 
 class _PrizeWheelScrollDriveViewState extends State<PrizeWheelScrollDriveView> with SingleTickerProviderStateMixin {
-  ScrollController turns;
+  final ScrollController turns= ScrollController();
 
   double get turnsValue => !turns.hasClients ? .0 : turns.offset / 260.0;
-  double paintWidth;
+  late double paintWidth = .0;
 
   @override
   void initState() {
     super.initState();
-    turns = ScrollController();
 
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((Duration timeStamp) {
       paintWidth = MediaQuery.of(context).size.width - 5.0;
       setState(() {});
     });
@@ -51,7 +49,7 @@ class _PrizeWheelScrollDriveViewState extends State<PrizeWheelScrollDriveView> w
                   children: <Widget>[
                     AnimatedBuilder(
                       animation: turns,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         final Matrix4 transform = Matrix4.rotationZ(-turnsValue);
                         return Transform(
                           transform: transform,
@@ -60,7 +58,7 @@ class _PrizeWheelScrollDriveViewState extends State<PrizeWheelScrollDriveView> w
                         );
                       },
                       child: CustomPaint(
-                        size: Size.square(paintWidth ?? .0),
+                        size: Size.square(paintWidth),
                         painter: BodyMassIndexPainter(),
                       ),
                     ),

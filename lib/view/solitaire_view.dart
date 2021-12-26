@@ -2,10 +2,9 @@ import 'dart:math' as math;
 
 import 'package:awesome_flutter/util/math_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SolitaireView extends StatefulWidget {
-  const SolitaireView({Key key}) : super(key: key);
+  const SolitaireView({Key? key}) : super(key: key);
 
   @override
   _SolitaireViewState createState() => _SolitaireViewState();
@@ -52,8 +51,8 @@ class SolitairePainter extends CustomPainter {
   final List<Offset> pointList;
   static List<Solitaire> solitaireList = <Solitaire>[];
 
-  Size canvasSize;
-  Offset get sourcePosition => Offset(canvasSize.width / 2, canvasSize.height);
+  late Size? canvasSize;
+  Offset get sourcePosition => Offset(canvasSize!.width / 2, canvasSize!.height);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -63,7 +62,7 @@ class SolitairePainter extends CustomPainter {
     solitaireList.addAll(
       pointList.sublist(solitaireList.length).map(
             (Offset e) => Solitaire(
-              Offset(e.dx, canvasSize.height - e.dy),
+              Offset(e.dx, canvasSize!.height - e.dy),
             ),
           ),
     );
@@ -117,7 +116,7 @@ class Trajectory {
   final num direction;
 
   // end min point
-  Offset offset;
+  late Offset? offset;
 
   void update() {
     if (offset == null) {
@@ -125,17 +124,17 @@ class Trajectory {
       offset = Offset(trajectory.first.dx + dy * (1.0 - startProgress) * ratio * direction, dy);
     }
 
-    if (offset.dy <= 1.0) {
+    if (offset!.dy <= 1.0) {
       return;
     }
 
     final double x = trajectory.last.dx + 3.0 * direction;
-    final double progress = (offset.dx - x) / (offset.dy * ratio) * direction;
-    final Offset point = Offset(x, -offset.dy * math.sin(progress * math.pi));
+    final double progress = (offset!.dx - x) / (offset!.dy * ratio) * direction;
+    final Offset point = Offset(x, -offset!.dy * math.sin(progress * math.pi));
     if (progress > 0.0) {
       trajectory.add(point);
     } else {
-      final double dy = offset.dy * 0.7;
+      final double dy = offset!.dy * 0.7;
       offset = Offset(x + dy * ratio * direction, dy);
     }
   }

@@ -1,11 +1,11 @@
 class Lyric {
-  Lyric({this.lyricItemList});
+  Lyric({required this.lyricItemList});
 
   final List<LyricItem> lyricItemList;
 }
 
 class LyricItem {
-  const LyricItem({this.duration, this.text});
+  const LyricItem({required this.duration, required this.text});
 
   final Duration duration;
   final String text;

@@ -3,10 +3,9 @@ import 'dart:math' as math;
 
 import 'package:awesome_flutter/util/math_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SolitaireView extends StatelessWidget {
-  const SolitaireView({Key key}) : super(key: key);
+  const SolitaireView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class SolitaireView extends StatelessWidget {
             return Stack(
               children: <Widget>[
                 Positioned.fill(child: Container(color: Colors.pink)),
-                for (Solitaire item in solitaireList.solitaireList) item
+                for (Solitaire item in solitaireList.solitaireList) RepaintBoundary(child: item)
               ],
             );
           },
@@ -41,7 +40,7 @@ class SolitaireView extends StatelessWidget {
 }
 
 class SolitaireList extends ChangeNotifier {
-  SolitaireList({this.screenSize});
+  SolitaireList({required this.screenSize});
 
   final Size screenSize;
   final List<Solitaire> solitaireList = <Solitaire>[];
@@ -61,7 +60,7 @@ class SolitaireList extends ChangeNotifier {
 }
 
 class Solitaire extends StatelessWidget {
-  Solitaire(Offset position, {Key key})
+  Solitaire(Offset position, {Key? key})
       : trajectory = Trajectory(position),
         color = Color(randomInt(0, 0xFFFFFFFF)),
         super(key: key);
@@ -115,7 +114,7 @@ class Trajectory extends ChangeNotifier {
   final num direction;
 
   // end min point
-  Offset offset;
+  Offset? offset;
 
   void update() {
     if (offset == null) {
@@ -123,17 +122,17 @@ class Trajectory extends ChangeNotifier {
       offset = Offset(trajectory.first.dx + dy * (1.0 - startProgress) * ratio * direction, dy);
     }
 
-    if (offset.dy <= 1.0) {
+    if (offset!.dy <= 1.0) {
       return;
     }
 
     final double x = trajectory.last.dx + 3.0 * direction;
-    final double progress = (offset.dx - x) / (offset.dy * ratio) * direction;
-    final Offset point = Offset(x, offset.dy * math.sin(progress * math.pi));
+    final double progress = (offset!.dx - x) / (offset!.dy * ratio) * direction;
+    final Offset point = Offset(x, offset!.dy * math.sin(progress * math.pi));
     if (progress > 0.0) {
       trajectory.add(point);
     } else {
-      final double dy = offset.dy * 0.6;
+      final double dy = offset!.dy * 0.6;
       offset = Offset(x + dy * ratio * direction, dy);
     }
     notifyListeners();

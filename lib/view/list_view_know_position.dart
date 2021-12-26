@@ -1,49 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ListViewKnowPosition extends StatefulWidget {
-  const ListViewKnowPosition({Key key}) : super(key: key);
+  const ListViewKnowPosition({Key? key}) : super(key: key);
 
   @override
   _ListViewKnowPositionState createState() => _ListViewKnowPositionState();
 }
 
 class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
-  ScrollController controller;
-  GlobalKey listViewKey;
-  List<Widget> list;
-  Map<String, GlobalKey> keyMap;
-  int listIndex;
-  StreamController<int> streamController;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = ScrollController();
-    listViewKey = GlobalKey();
-    list = <Widget>[];
-    keyMap = <String, GlobalKey>{};
-    listIndex = 0;
-    streamController = StreamController<int>();
-    List<void>.generate(10, (int index) {
-      list.add(Container(
-        key: ValueKey<int>(index),
-        height: 1500.0,
-        color: Colors.primaries[index],
-        alignment: Alignment.center,
-        child: Text('$index'),
-      ));
-      // final GlobalKey key = GlobalKey();
-      // keyMap['$index'] = key;
-      // list.add(Container(
-      //   key: key,
-      //   height: 0.0,
-      //   color: Colors.black,
-      // ));
-    });
-  }
+  final ScrollController controller = ScrollController();
+  final GlobalKey listViewKey = GlobalKey();
+  final List<Widget> list = List<Widget>.generate(10, (int index) {
+    return Container(
+      key: ValueKey<int>(index),
+      height: 1500.0,
+      color: Colors.primaries[index],
+      alignment: Alignment.center,
+      child: Text('$index'),
+    );
+  });
+  final Map<String, GlobalKey> keyMap = <String, GlobalKey>{};
+  late int listIndex = 0;
+  final StreamController<int> streamController = StreamController<int>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +39,7 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
               cacheExtent: 0.0,
               itemBuilder: (BuildContext context, int index) {
                 final Widget item = list[index];
-                final int value = (item.key as ValueKey<int>)?.value;
+                final int value = (item.key as ValueKey<int>).value;
                 if (value != listIndex) {
                   listIndex = value;
                   streamController.add(value);
@@ -122,9 +102,9 @@ class _ListViewKnowPositionState extends State<ListViewKnowPosition> {
     keyMap.forEach((String key, GlobalKey e) {
       // 应该有方法判断listview现在正在显示的item，这个通过catch的方法太蠢了
       try {
-        print(e.currentContext.findRenderObject().getTransformTo(null).getTranslation().y);
+        print(e.currentContext?.findRenderObject()?.getTransformTo(null).getTranslation().y);
         print('------------$key-----------');
-        print(e.currentContext.findAncestorWidgetOfExactType<ListView>());
+        print(e.currentContext?.findAncestorWidgetOfExactType<ListView>());
         // ignore: empty_catches
       } catch (e) {}
     });

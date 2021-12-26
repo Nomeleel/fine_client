@@ -1,5 +1,6 @@
 name: fine_client
 description: A new Flutter project.
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -14,22 +15,20 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
-  awesome_flutter:
-    path: ../awesome_flutter
-  cupertino_icons: ^0.1.2
-  dio: 4.0.0
-  extended_image: 4.1.0
-  flushbar: ^1.10.2
   flutter:
     sdk: flutter
-  html: ^0.15.0
-  image_gallery_saver: ^1.2.2
-  image_picker: ^0.6.3+4
-  provider: 6.0.0
-  wechat_assets_picker: 6.0.5
+  awesome_flutter:
+    path: ../awesome_flutter
+  dio: 4.0.4
+  extended_image: 6.0.1
+  html: 0.15.0
+  image_gallery_saver: 1.7.1
+  image_picker: 0.8.4+4
+  provider: 6.0.1
+  wechat_assets_picker: 6.3.1
 
 dev_dependencies:
   flutter_test:

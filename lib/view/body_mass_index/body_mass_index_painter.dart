@@ -2,10 +2,9 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class BodyMassIndexPainter extends CustomPainter {
-  double _painterRadius;
+  late double _painterRadius;
 
   // style
   // 依据转盘结果适当改变颜色
@@ -133,7 +132,7 @@ class BodyMassIndexPainter extends CustomPainter {
     final ui.Gradient gradient = ui.Gradient.radial(
       fullCircleRect.center,
       heightPanelRadius,
-      <Color>[Colors.green[700], Colors.green],
+      <Color>[Colors.green[700]!, Colors.green],
       const <double>[0, .7],
     );
 
