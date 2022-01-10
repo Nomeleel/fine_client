@@ -37,6 +37,8 @@ class _SolitaireViewState extends State<SolitaireView> with SingleTickerProvider
             )..forward(),
             pointList,
           ),
+          isComplex: true,
+          // willChange: true,
         ),
       ),
     );
@@ -51,23 +53,23 @@ class SolitairePainter extends CustomPainter {
   final List<Offset> pointList;
   static List<Solitaire> solitaireList = <Solitaire>[];
 
-  late Size? canvasSize;
-  Offset get sourcePosition => Offset(canvasSize!.width / 2, canvasSize!.height);
+  late Size canvasSize;
+  Offset get sourcePosition => Offset(canvasSize.width / 2, canvasSize.height);
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvasSize ??= size;
+    canvasSize = size;
     canvas.translate(0.0, size.height);
 
     solitaireList.addAll(
       pointList.sublist(solitaireList.length).map(
             (Offset e) => Solitaire(
-              Offset(e.dx, canvasSize!.height - e.dy),
+              Offset(e.dx, canvasSize.height - e.dy),
             ),
           ),
     );
 
-    final int removeCount = solitaireList.length - 50;
+    final int removeCount = solitaireList.length - 150;
     if (removeCount > 0) {
       pointList.removeRange(0, removeCount);
       solitaireList.removeRange(0, removeCount);
@@ -76,16 +78,17 @@ class SolitairePainter extends CustomPainter {
     // ignore: avoid_function_literals_in_foreach_calls
     solitaireList.forEach((Solitaire solitaire) {
       // ignore: avoid_function_literals_in_foreach_calls
-      solitaire.trajectory.trajectory.forEach((Offset e) {
-        final Rect rect = (e - const Offset(0, 70.0)) & const Size(55, 80);
-        canvas.drawRect(rect, Paint()..color = solitaire.color);
-        canvas.drawRect(
-          rect,
-          Paint()
-            ..color = Colors.black
-            ..style = PaintingStyle.stroke,
-        );
-      });
+      // solitaire.trajectory.trajectory.forEach((Offset e) {
+      Offset e = solitaire.trajectory.trajectory.last;
+      final Rect rect = (e - const Offset(0, 70.0)) & const Size(55, 80);
+      canvas.drawRect(rect, Paint()..color = solitaire.color);
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.stroke,
+      );
+      // });
       solitaire.trajectory.update();
     });
   }
@@ -116,25 +119,25 @@ class Trajectory {
   final num direction;
 
   // end min point
-  late Offset? offset;
+  late Offset offset = initOffset();
+
+  Offset initOffset() {
+    final double dy = trajectory.first.dy / math.sin(startProgress * math.pi);
+    return Offset(trajectory.first.dx + dy * (1.0 - startProgress) * ratio * direction, dy);
+  }
 
   void update() {
-    if (offset == null) {
-      final double dy = trajectory.first.dy / math.sin(startProgress * math.pi);
-      offset = Offset(trajectory.first.dx + dy * (1.0 - startProgress) * ratio * direction, dy);
-    }
-
-    if (offset!.dy <= 1.0) {
+    if (offset.dy <= 1.0) {
       return;
     }
 
     final double x = trajectory.last.dx + 3.0 * direction;
-    final double progress = (offset!.dx - x) / (offset!.dy * ratio) * direction;
-    final Offset point = Offset(x, -offset!.dy * math.sin(progress * math.pi));
+    final double progress = (offset.dx - x) / (offset.dy * ratio) * direction;
+    final Offset point = Offset(x, -offset.dy * math.sin(progress * math.pi));
     if (progress > 0.0) {
       trajectory.add(point);
     } else {
-      final double dy = offset!.dy * 0.7;
+      final double dy = offset.dy * 0.7;
       offset = Offset(x + dy * ratio * direction, dy);
     }
   }
