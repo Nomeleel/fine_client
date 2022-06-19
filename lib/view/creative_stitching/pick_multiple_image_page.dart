@@ -57,7 +57,7 @@ class _PickMultipleImagePageState extends State<PickMultipleImagePage> {
 
     final List<AssetEntity>? multipleImageList = await AssetPicker.pickAssets(
       context,
-      maxAssets: 18,
+      pickerConfig: const AssetPickerConfig(maxAssets: 18),
     );
 
     await Future.forEach(multipleImageList!, (AssetEntity assetEntity) async {

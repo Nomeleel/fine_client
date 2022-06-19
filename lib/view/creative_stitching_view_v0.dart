@@ -174,7 +174,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
             if (_finalByteDataList != null) {
               for (final ByteData imageByteData in _finalByteDataList!) {
                 await ImageGallerySaver.saveImage(imageByteData.buffer.asUint8List());
-                print('Save complete.');
+                debugPrint('Save complete.');
               }
             }
           }),
@@ -306,7 +306,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           fit: BoxFit.cover,
         ),
         onTap: () {
-          final WidgetBuilder builder = (BuildContext context) {
+          builder(BuildContext context) {
             return PageView(
               controller: PageController(
                 initialPage: i,
@@ -314,7 +314,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
               physics: const BouncingScrollPhysics(),
               children: detailViewList,
             );
-          };
+          }
 
           Navigator.maybeOf(context)?.push<dynamic>(
             Platform.isAndroid 
@@ -424,7 +424,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
   Future<void> pickAssets() async {
     final List<AssetEntity>? multipleImageList = await AssetPicker.pickAssets(
       context,
-      maxAssets: 18,
+      pickerConfig: const AssetPickerConfig(maxAssets: 18),
     );
 
     if (multipleImageList?.isNotEmpty ?? false) {
@@ -449,7 +449,7 @@ class _CreativeStitchingViewV0State extends State<CreativeStitchingViewV0> {
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Hero(
               tag: uniqueTag,
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: ListView(
                   physics: const BouncingScrollPhysics(),

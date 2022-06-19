@@ -27,7 +27,7 @@ class _PrizeWheelTwoScrollDriveViewState extends State<PrizeWheelTwoScrollDriveV
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       paintWidth = MediaQuery.of(context).size.width - 5.0;
       setState(() {});
       turnsH.jumpTo(2.0);

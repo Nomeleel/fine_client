@@ -56,8 +56,7 @@ class LyricsProvider with ChangeNotifier{
   }
 
   Duration getNextDuration() {
-    final Duration Function(int index) getDuration = 
-      (int index) => _lyricItemList[index].duration;
+    getDuration(int index) => _lyricItemList[index].duration;
     return getDuration(_currentIndex + 1) - getDuration(_currentIndex);
   }
 

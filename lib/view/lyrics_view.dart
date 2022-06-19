@@ -29,7 +29,7 @@ class _LyricsViewState extends State<LyricsView> {
 
   @override
   Widget build(BuildContext context) {
-    print('root build');
+    debugPrint('root build');
     return Scaffold(
       body: PreferredOrientations(
         orientations: const <DeviceOrientation>[
@@ -100,7 +100,7 @@ class _LyricsViewState extends State<LyricsView> {
           (int index) => Selector<LyricsProvider, LyricItemWidget>(
                 selector: (BuildContext context, LyricsProvider provider) => _provider.lyricItemWidgetList[index],
                 builder: (BuildContext context, LyricItemWidget widget, Widget? child) {
-                  print('${DateTime.now()} build: $index');
+                  debugPrint('${DateTime.now()} build: $index');
                   return Container(
                     alignment: Alignment.center,
                     //color: Colors.purple,

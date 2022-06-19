@@ -13,7 +13,7 @@ import 'package:fine_client/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(const MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
@@ -29,7 +29,7 @@ void main() {
   });
 
   test('parseLyric', () {
-    print('start prase');
+    debugPrint('start prase');
     //final String lyricStr = await rootBundle.loadString('assets/lyrics/Mojito.lrc');
     const String lyricStr = '''[00:16.80]麻烦给我的爱人来一杯Mojito
     [00:20.98]我喜欢阅读她微醺时的眼眸
@@ -40,7 +40,7 @@ void main() {
     //print(regExp.stringMatch(lyricStr));
 
     regExp.allMatches(lyricStr).forEach((RegExpMatch element) {
-      print(int.parse(element.namedGroup('min')!));
+      debugPrint(int.parse(element.namedGroup('min')!).toString());
     });
 
  

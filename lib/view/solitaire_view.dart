@@ -19,7 +19,7 @@ class _SolitaireViewState extends State<SolitaireView> with SingleTickerProvider
       backgroundColor: Colors.green,
       body: Listener(
         onPointerDown: (PointerDownEvent e) {
-          print(e);
+          debugPrint('$e');
           pointList.add(e.position);
         },
         onPointerMove: (PointerMoveEvent e) {

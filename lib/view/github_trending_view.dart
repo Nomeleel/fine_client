@@ -64,9 +64,9 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
   Future<List<TrendingItem>> getTrendingList() async {
     final Response<dynamic> html = await _dio.get<dynamic>('https://github.com/trending');
     final dom.Document document = parser.parse(html.data);
-    print(document.getElementsByTagName('article').length);
+    debugPrint(document.getElementsByTagName('article').length.toString());
     final List<dom.Element> elements = document.getElementsByTagName('article');
-    print('----------------------------Found ${elements.length} repositories--------------------------------');
+    debugPrint('----------------------------Found ${elements.length} repositories--------------------------------');
     elements.forEach(parseArticle);
 
     return _trendingList;
@@ -93,9 +93,9 @@ class _GithubTrendingViewState extends State<GithubTrendingView> {
     trendingItem.forkStr = startFork[1].text.trim();
     // Trending
     trendingItem.trending = article.getElementsByClassName('d-inline-block float-sm-right')[0].text.trim();
-    print(trendingItem);
+    debugPrint('$trendingItem');
     _trendingList.add(trendingItem);
-    print('------------------------------------------------------------');
+    debugPrint('------------------------------------------------------------');
   }
 }
 

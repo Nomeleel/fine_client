@@ -43,11 +43,7 @@ class CreativeStitchingView extends StatelessWidget {
               page = const PreviewPage();
               break;
             default:
-              page = Container(
-                child: const Center(
-                  child: Text('☹'),
-                ),
-              );
+              page = const Center(child: Text('☹'));
               break;
           }
           return CupertinoPageRoute<dynamic>(

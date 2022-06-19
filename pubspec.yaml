@@ -23,12 +23,12 @@ dependencies:
   awesome_flutter:
     path: ../awesome_flutter
   dio: 4.0.4
-  extended_image: 6.0.1
+  extended_image: 6.2.1
   html: 0.15.0
   image_gallery_saver: 1.7.1
   image_picker: 0.8.4+4
-  provider: 6.0.1
-  wechat_assets_picker: 6.3.1
+  provider: 6.0.3
+  wechat_assets_picker: 7.3.0
 
 dev_dependencies:
   flutter_test:

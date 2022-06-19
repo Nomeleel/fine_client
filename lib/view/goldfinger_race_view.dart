@@ -13,7 +13,7 @@ class GoldfingerRaceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
+    debugPrint('build');
     // ignore: close_sinks
     late Socket? socket;
     int count = 0;

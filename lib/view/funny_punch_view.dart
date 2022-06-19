@@ -16,7 +16,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
+        child: SizedBox(
           height: 360.0,
           width: 360.0,
           child: Stack(
@@ -44,7 +44,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
       ),
     );
   }
-
+  // TODO align
   Widget punchBuilder({int flag = 1}) {
     final double start = 0.25 - flag / 4.0;
     final Animation<double> animation = CurveTween(curve: Interval(start, start + 0.5)).animate(controller);

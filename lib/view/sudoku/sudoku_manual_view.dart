@@ -147,7 +147,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
     //       },
     //     );
     // print(resp);
-    print(_provider.sudokuStr);
+    debugPrint(_provider.sudokuStr);
     _dio
         .post<dynamic>(
       'http://127.0.0.1:8160/sudoku',
@@ -168,7 +168,7 @@ class SudokuManualViewState extends State<SudokuManualView> {
         );
       }
     }).catchError((dynamic e) {
-      print(e);
+      debugPrint('$e');
       FlushBarHelper.showError(
         context: context,
         message: '网络异常！',

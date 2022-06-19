@@ -19,7 +19,7 @@ class _PrizeWheelScrollDriveViewState extends State<PrizeWheelScrollDriveView> w
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       paintWidth = MediaQuery.of(context).size.width - 5.0;
       setState(() {});
     });

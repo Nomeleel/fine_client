@@ -170,7 +170,7 @@ class _PreviewPageState extends State<PreviewPage> {
           fit: BoxFit.cover,
         ),
         onTap: () {
-          final WidgetBuilder builder = (BuildContext context) {
+          builder(BuildContext context) {
             return PageView(
               controller: PageController(
                 initialPage: i,
@@ -178,7 +178,7 @@ class _PreviewPageState extends State<PreviewPage> {
               physics: const BouncingScrollPhysics(),
               children: detailViewList,
             );
-          };
+          }
 
           Navigator.maybeOf(context)?.push<dynamic>(
             Platform.isAndroid 
@@ -213,7 +213,7 @@ class _PreviewPageState extends State<PreviewPage> {
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Hero(
               tag: uniqueTag,
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: ListView(
                   physics: const BouncingScrollPhysics(),

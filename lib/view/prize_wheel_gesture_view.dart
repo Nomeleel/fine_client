@@ -28,7 +28,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with TickerProviderStat
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((Duration timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       paintWidth = MediaQuery.of(context).size.width - 10.0;
       centerPoint = Offset(paintWidth / 2, paintWidth / 2);
       setState(() {});
@@ -70,7 +70,7 @@ class _PrizeWheelViewState extends State<PrizeWheelView> with TickerProviderStat
                     turnsValue.value += acos;
                   },
                   onPointerUp: (PointerUpEvent event) {
-                    print(speed);
+                    // print(speed);
                     onFlying(speed);
                   },
                   child: AnimatedBuilder(
