@@ -14,6 +14,7 @@
 | [数独](#数独) | 数独不会解，截图上传就完事了。什么？你不会截图，那你试试手动输入模式。 |
 | [创意拼图](#创意拼图) | 想要微信九宫格整体显示为一张图片，可以试试这个。注意！并非一张图片裁切成九份这么简单！ |
 | [歌词提示器](#歌词提示器) | 横屏显示的歌词提示器，并支持调节歌词字体大小和颜色。 |
+| [萌宠甜蜜暴击](#萌宠甜蜜暴击) | 萌宠甜蜜暴击 但是骂骂咧咧 |
 
 **多说无益，直接看图吧**
 
@@ -116,3 +117,19 @@
 还可以调节字体颜色和大小：
 
 <img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/gctsq_2.gif" width="40%" />
+
+## 萌宠甜蜜暴击
+
+记一次被一组魔性表情包洗脑后 浅尝复刻表情包 
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch.gif" width="30%" />
+
+灵感来源: 萌宠群魔乱舞 图fine秒mine
+
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_1.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_2.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_3.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_4.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_5.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_6.gif" width="20%" />
+<img src="https://raw.githubusercontent.com/Nomeleel/Assets/master/fine_client/markdown/funny_punch_7.gif" width="20%" />

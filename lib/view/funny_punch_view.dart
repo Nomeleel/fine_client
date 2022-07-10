@@ -44,7 +44,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
       ),
     );
   }
-  // TODO align
+
   Widget punchBuilder({int flag = 1}) {
     final double start = 0.25 - flag / 4.0;
     final Animation<double> animation = CurveTween(curve: Interval(start, start + 0.5)).animate(controller);
@@ -67,7 +67,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
   }
 
   Widget punch({bool flip = false}) {
-    final Transform child = Transform(
+    Widget child = Transform(
       alignment: const Alignment(0.3, 0.3),
       transform: Matrix4.rotationZ(-0.3 * pi),
       child: const Text(
@@ -79,7 +79,7 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
       ),
     );
     if (flip) {
-      return Transform(
+      child = Transform(
         alignment: Alignment.center,
         transform: Matrix4.rotationY(pi),
         child: child,
@@ -96,5 +96,12 @@ class _FunnyPunchViewState extends State<FunnyPunchView> with SingleTickerProvid
       },
       child: child,
     );
+  }
+
+  @override
+  void dispose() {
+    controller.stop();
+    controller.dispose();
+    super.dispose();
   }
 }
